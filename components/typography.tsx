@@ -12,7 +12,7 @@ export const InlineCode = forwardRef<HTMLElement, TypographyProps>(
 			<code
 				ref={ref}
 				className={cn(
-					"bg-(--muted) relative rounded px-[2px] leading-12 font-mono text-sm font-medium",
+					"bg-muted relative rounded px-[2px] leading-12 font-mono text-sm font-medium",
 					props.className,
 				)}
 			>
@@ -27,7 +27,7 @@ export const Lead = forwardRef<HTMLParagraphElement, TypographyProps>(
 		return (
 			<p
 				ref={ref}
-				className={cn("text-(--muted-foreground) text-xl", props.className)}
+				className={cn("text-muted-foreground text-xl", props.className)}
 			>
 				{props.children}
 			</p>
@@ -61,7 +61,7 @@ export const Muted = forwardRef<HTMLParagraphElement, TypographyProps>(
 		return (
 			<p
 				ref={ref}
-				className={cn("text-(--muted-foreground) text-sm", props.className)}
+				className={cn("text-muted-foreground text-sm", props.className)}
 			>
 				{props.children}
 			</p>

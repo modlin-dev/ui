@@ -1,3 +1,4 @@
+import "./globals.css"
 import { cn } from "@/lib/utils"
 import { IconLoader2 } from "@tabler/icons-react"
 import type { MouseEvent, FocusEvent, ReactNode, ReactHTMLElement } from "react"
@@ -34,15 +35,15 @@ const sizeMap = {
 }
 const variant: Variants = {
     primary:
-        "bg-(--primary) disabled:bg-(--priority) hover:bg-(--primary)/85 text-white dark:text-black",
-    secondary: "bg-(--secondary) hover:bg-(--secondary)/75",
+        "bg-primary disabled:bg-priority hover:bg-primary/85 text-background",
+    secondary: "bg-secondary hover:bg-secondary/75",
     destructive: "bg-(--red) hover:bg-(--red)/85 text-white",
     outline: cn(
-        "bg-(--background) inset-ring inset-ring-(--outline)",
-        "hover:bg-(--secondary) active:bg-(--secondary) focus-visible:inset-ring-(--description) disabled:bg-(--background) disabled:text-(--description)",
+        "bg-background inset-ring inset-ring-outline",
+        "hover:bg-secondary active:bg-secondary focus-visible:inset-ring-description disabled:bg-background disabled:text-description",
     ),
     ghost: "hover:bg-black/5 dark:hover:bg-white/10",
-    link: "text-(--primary) hover:underline",
+    link: "text-primary hover:underline",
     none: cn(),
     // jnsa: "bg-(--purple) hover:bg-(--purple)/90 text-white",
     // outline_red: "inset-ring inset-ring-(--red)/50 hover:bg-(--red)/5 text-(--red)",

@@ -1,7 +1,7 @@
 {
     "name": "@modlin/ui",
     "description": "A lightweight UI library built on the Suffix design system for consistent, fast, and elegant interfaces.",
-    "version": "0.0.2",
+    "version": "0.0.21",
     "main": "src/index.ts",
     "type": "module",
     "exports": {

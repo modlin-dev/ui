@@ -1,72 +1,72 @@
 @import "tailwindcss";
 
 :root {
-	--background: hsl(0 0% 100%);
-	/* 100% white */
-	--foreground: hsl(0 0% 0%);
-	/* 100% black */
-	--muted: hsl(0 0% 75%);
-	--muted-foreground: hsl(0 0% 50%);
-	--outline: oklch(90% 0 0);
-	/* 15% black */
-	--priority: rgb(64, 64, 64);
-	/* 75% black */
-	--description: #7f7f7f;
-	/* 50% black */
-	--disabled: #bfbfbf;
-	/* 25% black */
-	--light: rgb(236, 236, 242);
-	/* 5% black */
-	--shadow: rgba(0, 0, 0, 0.1);
-	--primary: hsl(0 0% 0%);
-	--secondary: hsl(0 0% 95%);
-	--red: #f11c42;
-	--green: #00bc7a;
-	--blue: #4c52f4;
-	--purple: #7962f0;
+    --background: hsl(0 0% 100%);
+    /* 100% white */
+    --foreground: hsl(0 0% 0%);
+    /* 100% black */
+    --muted: hsl(0 0% 75%);
+    --muted-foreground: hsl(0 0% 50%);
+    --outline: oklch(90% 0 0);
+    /* 15% black */
+    --priority: rgb(64, 64, 64);
+    /* 75% black */
+    --description: #7f7f7f;
+    /* 50% black */
+    --disabled: #bfbfbf;
+    /* 25% black */
+    --light: rgb(236, 236, 242);
+    /* 5% black */
+    --shadow: rgba(0, 0, 0, 0.1);
+    --primary: hsl(0 0% 0%);
+    --secondary: hsl(0 0% 95%);
+    --red: #f11c42;
+    --green: #00bc7a;
+    --blue: #4c52f4;
+    --purple: #7962f0;
 }
 
 @media (prefers-color-scheme: dark) {
-	:root {
-		--background: #000000;
-		/* 100% black */
-		--foreground: #ffffff;
-		/* 100% white */
-		--muted: oklch(25% 0 0);
-		--muted-foreground: oklch(70% 0 0);
+    :root {
+        --background: #000000;
+        /* 100% black */
+        --foreground: #ffffff;
+        /* 100% white */
+        --muted: oklch(25% 0 0);
+        --muted-foreground: oklch(70% 0 0);
 
-		--outline: oklch(30% 0 0);
-		/* 25% white */
-		--priority: rgb(191, 191, 191);
-		/* 75% white */
-		--description: rgba(255, 255, 255, 0.5);
-		--disabled: rgba(255, 255, 255, 0.25);
-		--light: rgb(25, 25, 25);
-		/* 5% black */
-		--shadow: rgba(255, 255, 255, 0.25);
-		--primary: #ffffff;
-		--secondary: #1a1a1a;
-		--red: #f11c42;
-		--green: #33c995;
-		--blue: #7075f6;
-		--purple: #8366f4;
-	}
+        --outline: oklch(30% 0 0);
+        /* 25% white */
+        --priority: rgb(191, 191, 191);
+        /* 75% white */
+        --description: rgba(255, 255, 255, 0.5);
+        --disabled: rgba(255, 255, 255, 0.25);
+        --light: rgb(25, 25, 25);
+        /* 5% black */
+        --shadow: rgba(255, 255, 255, 0.25);
+        --primary: #ffffff;
+        --secondary: #1a1a1a;
+        --red: #f11c42;
+        --green: #33c995;
+        --blue: #7075f6;
+        --purple: #8366f4;
+    }
 }
 
 body {
-	background: var(--background);
-	color: var(--foreground);
-	font-size: 16px;
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 16px;
 }
 
 button:focus {
-	outline: none;
+    outline: none;
 }
 
 input:focus {
-	outline: none;
+    outline: none;
 }
 
 textarea:focus {
-	outline: none;
+    outline: none;
 }

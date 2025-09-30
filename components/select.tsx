@@ -33,15 +33,15 @@ export function Dropdown() {
 	)
 }
 
-export interface SelectOptionProps {
+export interface SelectItemProps {
 	value: string
 	children: ReactNode
 	className?: string
 	onClick?: () => void
 }
-export function SelectOption(
-	props: Readonly<SelectOptionProps>,
-): ReactElement<SelectOptionProps> {
+export function SelectItem(
+	props: Readonly<SelectItemProps>,
+): ReactElement<SelectItemProps> {
 	return (
 		<button
 			type="button"
@@ -49,8 +49,8 @@ export function SelectOption(
 			value={props.value}
 			onClick={props.onClick}
 			className={cn(
-				"flex items-center h-12 px-4 gap-4",
-				"select-none hover:bg-(--secondary)",
+				"flex items-center min-h-12 px-4 gap-4",
+				"select-none hover:bg-secondary",
 				// "[&>svg]:size-4 [&>svg]:scale-125",
                 props.className
 			)}
@@ -66,7 +66,7 @@ export interface SelectProps {
 	value?: string
 	name?: string
 	id?: string
-	children: ReactElement<SelectOptionProps>[]
+	children: ReactElement<SelectItemProps>[]
 }
 export function Select(props: SelectProps) {
 	const [expanded, setExpanded] = useState(false)

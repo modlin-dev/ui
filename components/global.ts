@@ -18,6 +18,8 @@ export const input_variant: Variants = {
 		"border border-disabled disabled:border-outline focus:border-description",
 		"focus:ring-4 focus:ring-foreground/5",
 		"invalid:inset-ring-red",
+		"data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
+		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/5",
 	),
 	secondary: cn(),
 	destructive: cn(

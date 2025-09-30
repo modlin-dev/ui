@@ -5,7 +5,8 @@
     "main": "src/index.ts",
     "type": "module",
     "exports": {
-        "./*": "./components/*.tsx"
+        "./*": "./components/*.tsx",
+        "./globals.css": "./components/globals.css"
     },
     "scripts": {
         "dev": "next dev --turbopack",

@@ -1,4 +1,3 @@
-import "./globals.css"
 import { cn } from "@/lib/utils"
 import { IconLoader2 } from "@tabler/icons-react"
 import type { MouseEvent, FocusEvent, ReactNode, ReactHTMLElement } from "react"
@@ -31,7 +30,7 @@ const sizeMap = {
     ),
     icon: cn("p-2 rounded-full text-sm font-medium"),
     iconr: cn("p-2 rounded-2xl text-sm font-medium"),
-    none: cn(),
+    none: cn("overflow-visible"),
 }
 const variant: Variants = {
     primary:
@@ -53,16 +52,6 @@ const shapes = {
     square: "rounded-none",
     rounded: "",
     pill: "rounded-full",
-}
-const acyrlic = {
-    primary: "",
-    secondary: "",
-    destructive: "",
-    outline:
-        "inset-ring inset-ring-gray-300 dark:inset-ring-white/25 backdrop-blur-xl hover:bg-black/5 dark:hover:bg-white/10 dark:text-white",
-    ghost: "",
-    link: "",
-    shadcn: "",
 }
 export interface ButtonProps {
     variant?: Variant

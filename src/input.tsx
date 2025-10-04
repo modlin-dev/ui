@@ -6,7 +6,7 @@ import {
 	forwardRef,
 } from "react"
 import { input_variant, type Variant } from "./global"
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 
 export interface InputProps {
 	variant?: Variant
@@ -45,6 +45,7 @@ export interface InputProps {
 	// onChange?: (value: string) => void
 	className?: string
 	invalid?: boolean
+    describedby?: string
 }
 const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>(
 	(props, ref) => {
@@ -73,10 +74,11 @@ const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>(
 				id={props.id}
 				autoComplete={props.autoComplete}
 				data-invalid={props.invalid}
+                aria-describedby={props.describedby}
 				className={cn(
 					"flex items-center w-full h-12 px-4",
 					"peer rounded-2xl",
-					"transition-duration-150 transition-[box-shadow_color] ease-in",
+					"transition transition-duration-150 transition-[border,box-shadow] ease-in",
 					input_variant[props.variant ?? "primary"],
 					props.className,
 				)}

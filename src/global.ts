@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 
 export type Variant =
 	| "primary"
@@ -14,12 +14,12 @@ export const input_variant: Variants = {
 	primary: cn(
 		"bg-background",
 		"placeholder:text-description disabled:text-disabled",
-		// "inset-ring inset-ring-(--disabled) disabled:inset-ring-(--outline) focus:inset-ring-(--description)",
-		"border border-disabled disabled:border-outline focus:border-description",
-		"focus:ring-4 focus:ring-foreground/5",
+		// "inset-ring inset-ring-disabled disabled:inset-ring-outline focus:inset-ring-primary",
+		"border border-disabled disabled:border-outline focus:border-primary/75",
+		"focus:ring-4 focus:ring-primary/10",
 		"invalid:inset-ring-red",
 		"data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
-		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/5",
+		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
 	),
 	secondary: cn(),
 	destructive: cn(

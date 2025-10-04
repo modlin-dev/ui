@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 import { IconLoader2 } from "@tabler/icons-react"
 import type { MouseEvent, FocusEvent, ReactNode, ReactHTMLElement } from "react"
 import React from "react"
@@ -34,7 +34,7 @@ const sizeMap = {
 }
 const variant: Variants = {
     primary:
-        "bg-primary disabled:bg-priority hover:bg-primary/85 text-background",
+        "bg-primary disabled:bg-primary/60 hover:bg-primary/85 text-background",
     secondary: "bg-secondary hover:bg-secondary/75",
     destructive: "bg-(--red) hover:bg-(--red)/85 text-white",
     outline: cn(
@@ -82,7 +82,7 @@ export default function Button(props: Readonly<ButtonProps>) {
     const className = cn(
         "flex items-center justify-center leading-none truncate",
         "select-none hover:cursor-pointer disabled:hover:cursor-not-allowed",
-        "transition transition-all transition-duration-250 ease",
+        "transition transition-[background-color] transition-duration-250 ease",
         variant[props.variant ?? "primary"],
         sizeMap[props.size ?? "xl"],
         props.className,

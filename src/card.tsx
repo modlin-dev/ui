@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 import type * as React from "react"
 
 export interface CardHeaderProps {
@@ -72,8 +72,8 @@ export const Card: React.FC<CardProps> = props => {
 			className={cn(
 				"flex flex-col",
 				size[props.size ?? "md"],
-				"bg-(--background)",
-				"sm:inset-ring inset-ring-(--outline)",
+				"bg-background",
+				"sm:inset-ring inset-ring-outline",
 				props.className,
 			)}
 		>

@@ -1,35 +1,28 @@
 {
+    "$schema": "https://json.schemastore.org/package",
     "name": "@modlin/ui",
     "description": "A lightweight UI library built on the Suffix design system for consistent, fast, and elegant interfaces.",
-    "version": "0.0.21",
+    "version": "0.0.24",
     "main": "src/index.ts",
     "type": "module",
     "exports": {
-        "./*": "./components/*.tsx",
-        "./globals.css": "./components/globals.css"
-    },
-    "scripts": {
-        "dev": "next dev --turbopack",
-        "build": "next build --turbopack",
-        "start": "next start",
-        "lint": "biome check",
-        "format": "biome format --write"
+        "./*": "./src/*.tsx"
     },
     "dependencies": {
-        "@tabler/icons-react": "^3.35.0",
-        "clsx": "^2.1.1",
-        "tailwind-merge": "^3.3.1"
+        "@tabler/icons-react": "latest",
+        "clsx": "latest",
+        "tailwind-merge": "latest"
     },
     "peerDependencies": {
-        "next": "^15.5.3",
-        "react": "^19.1.1",
-        "react-dom": "^19.1.1"
+        "next": "latest",
+        "react": "latest",
+        "react-dom": "latest"
     },
     "devDependencies": {
-        "@types/bun": "^1.2.22",
-        "typescript": "^5.9.2",
-        "@types/react": "^19.1.13",
-        "@types/react-dom": "^19.1.9",
-        "@biomejs/biome": "^2.2.4"
+        "@types/bun": "latest",
+        "typescript": "latest",
+        "@repo/typescript-config": "workspace:*",
+        "@types/react": "latest",
+        "@types/react-dom": "latest"
     }
 }

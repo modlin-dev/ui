@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 
 export interface TextareaProps {
 	type?: "text" | "password" | "email" | "number" | "tel" | "url" | "file"

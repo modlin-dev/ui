@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 
 export interface CheckboxProps {
 	checked?: boolean
@@ -45,7 +45,7 @@ export default function Checkbox(props: Readonly<CheckboxProps>) {
 				onClick={() => setChecked(v => !v)}
 				disabled={props.disabled}
 				className={cn(
-					"w-4 h-4 rounded-sm hover:cursor-pointer",
+					"w-4 h-4 rounded-sm hover:cursor-pointer text-background",
 					"transition transition-all transition-duration-150 ease",
 					"data-[state=unchecked]:bg-white data-[state=unchecked]:dark:bg-black",
 					"data-[state=checked]:bg-black data-[state=checked]:dark:bg-white",
@@ -55,13 +55,10 @@ export default function Checkbox(props: Readonly<CheckboxProps>) {
 					"data-[state=unchecked]:disabled:inset-ring-black/25 data-[state=unchecked]:dark:disabled:inset-ring-white/25",
 				)}
 			>
-				<Image
-					src={"/check.svg"}
-					alt="Check"
-					width={16}
-					height={16}
-					className="dark:invert select-none"
-				/>
+				<svg width={16} height={16} viewBox="0 0 16 16" fill="none">
+					<title>Check</title>
+					<path d="M12 5L9 8L6.5 10.5L4 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+				</svg>
 			</button>
 		</>
 	)

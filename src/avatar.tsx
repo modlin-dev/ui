@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 import Image, { type ImageProps } from "next/image"
 
 export interface AvatarProps extends ImageProps {

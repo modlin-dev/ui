@@ -1,7 +1,7 @@
 import type { ReactElement } from "react"
 import type { HeadingProps } from "./heading"
 import type { TextProps } from "./text"
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 
 export interface HeaderProps {
 	gap?: number

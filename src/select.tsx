@@ -2,7 +2,7 @@
 import { IconChevronDown } from "@tabler/icons-react"
 import Button from "./button"
 import Text from "./text"
-import { cn } from "@/lib/utils"
+import { cn } from "./utils"
 import React, { type ReactElement, type ReactNode, useState } from "react"
 
 export interface SelectTriggerProps {
@@ -12,10 +12,7 @@ export interface SelectTriggerProps {
 }
 export function SelectTrigger(props: SelectTriggerProps) {
 	return (
-		<button
-			type="button"
-			className={cn("flex items-center", "bg-(--background)")}
-		>
+		<button type="button" className={cn("flex items-center", "bg-(--background)")}>
 			{props.placeholder}
 		</button>
 	)
@@ -37,26 +34,76 @@ export interface SelectItemProps {
 	value: string
 	children: ReactNode
 	className?: string
-	onClick?: () => void
+	onPress?: () => void
 }
-export function SelectItem(
-	props: Readonly<SelectItemProps>,
-): ReactElement<SelectItemProps> {
+export function SelectItem(props: Readonly<SelectItemProps>): ReactElement<SelectItemProps> {
 	return (
 		<button
 			type="button"
 			role="option"
 			value={props.value}
-			onClick={props.onClick}
+			onClick={props.onPress}
 			className={cn(
 				"flex items-center min-h-12 px-4 gap-4",
 				"select-none hover:bg-secondary",
 				// "[&>svg]:size-4 [&>svg]:scale-125",
-                props.className
+				props.className,
 			)}
 		>
 			{props.children}
 		</button>
+	)
+}
+export interface SelectContentProps {
+	defaultValue: string
+	children?: ReactNode
+}
+export function SelectContent(props: SelectContentProps) {
+	const [value, setValue] = useState<string>(props.defaultValue)
+	const [expanded, setExpanded] = useState(false)
+	const enhanced = React.Children.map(props.children, child => {
+		// We don't use Radix
+		const children = child as ReactElement<SelectItemProps>
+		if (!React.isValidElement(children)) return children
+
+		// Add/override props here
+		return React.cloneElement(children, {
+			onPress() {
+				setValue(children.props.value)
+				setExpanded(false)
+			},
+		})
+	})
+
+	return (
+		<div className="relative flex">
+			<button
+				type="button"
+				role="combobox"
+				aria-expanded={expanded}
+				aria-autocomplete="none"
+				aria-haspopup="listbox"
+				value={value}
+				id="country"
+				onClick={() => setExpanded(!expanded)}
+				// onBlur={() => setExpanded(false)}
+				{...register("country")}
+				className={cn("absolute flex items-center justify-center gap-1 px-4 h-12")}
+			>
+				<p className="font-medium w-6 h-6">{value}</p>
+				<IconSelector size={16} className="text-muted-foreground" />
+			</button>
+			<ul
+				className={cn(
+					"absolute top-[100%] flex flex-col mt-2 w-full max-h-72 overflow-auto",
+					"rounded-2xl",
+					"bg-background shadow-[0_0_16px_0_var(--shadow)]",
+					"animate-popup origin-top-left",
+				)}
+			>
+				{enhanced}
+			</ul>
+		</div>
 	)
 }
 
@@ -76,15 +123,17 @@ export function Select(props: SelectProps) {
 	const children: ReactElement[] = []
 	for (let i = 0; i < props.children.length; i++) {
 		const child = props.children[i]
-		children.push(
-			React.cloneElement(props.children[i], {
-				onClick() {
-					setValue(child.props.value)
-					setSelected(child.props.children)
-					setExpanded(false)
-				},
-			}),
-		)
+		if (React.isValidElement<SelectItemProps>(child)) {
+			children.push(
+				React.cloneElement(child, {
+					onClick() {
+						setValue(child.props.value)
+						setSelected(child.props.children)
+						setExpanded(false)
+					},
+				}),
+			)
+		}
 	}
 
 	return (
@@ -100,11 +149,7 @@ export function Select(props: SelectProps) {
 				id={props.id}
 				onClick={() => setExpanded(!expanded)}
 				// onBlur={() => setExpanded(false)}
-				className={cn(
-					"flex items-center gap-x-4",
-					"[&>svg]:size-4 [&>svg]:scale-125",
-					"focus:underline",
-				)}
+				className={cn("flex items-center gap-x-4", "[&>svg]:size-4 [&>svg]:scale-125", "focus:underline")}
 			>
 				{selected}
 				<IconChevronDown size={16} />

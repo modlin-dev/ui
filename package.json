@@ -1,28 +1,27 @@
 {
-    "$schema": "https://json.schemastore.org/package",
-    "name": "@modlin/ui",
-    "description": "A lightweight UI library built on the Suffix design system for consistent, fast, and elegant interfaces.",
-    "version": "0.0.24",
-    "main": "src/index.ts",
-    "type": "module",
-    "exports": {
-        "./*": "./src/*.tsx"
-    },
-    "dependencies": {
-        "@tabler/icons-react": "latest",
-        "clsx": "latest",
-        "tailwind-merge": "latest"
-    },
-    "peerDependencies": {
-        "next": "latest",
-        "react": "latest",
-        "react-dom": "latest"
-    },
-    "devDependencies": {
-        "@types/bun": "latest",
-        "typescript": "latest",
-        "@repo/typescript-config": "workspace:*",
-        "@types/react": "latest",
-        "@types/react-dom": "latest"
-    }
+	"$schema": "https://json.schemastore.org/package",
+	"name": "@modlin/ui",
+	"description": "A lightweight UI library built on the Suffix design system for consistent, fast, and elegant interfaces.",
+	"version": "0.0.241",
+	"main": "src/index.ts",
+	"type": "module",
+	"exports": {
+		"./*": "./src/*.tsx"
+	},
+	"dependencies": {
+		"@tabler/icons-react": "latest",
+		"clsx": "latest",
+		"tailwind-merge": "latest"
+	},
+	"peerDependencies": {
+		"next": "latest",
+		"react": "latest",
+		"react-dom": "latest"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"typescript": "latest",
+		"@types/react": "latest",
+		"@types/react-dom": "latest"
+	}
 }

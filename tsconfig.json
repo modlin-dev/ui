@@ -1,23 +1,26 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"compileroptions": {
+	"compilerOptions": {
+		"allowJs": true,
+		"allowImportingTsExtensions": true,
 		"declaration": true,
 		"declarationMap": true,
 		"esModuleInterop": true,
 		"incremental": false,
 		"isolatedModules": true,
-		"lib": ["es2022", "DOM", "DOM.Iterable"],
-		"module": "NodeNext",
+		"jsx": "react-jsx",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"module": "Preserve",
 		"moduleDetection": "force",
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "bundler",
+		"noEmit": true,
 		"noUncheckedIndexedAccess": true,
+		"outdir": "dist",
 		"resolveJsonModule": true,
+		"rootDir": "src",
 		"skipLibCheck": true,
 		"strict": true,
-		"target": "ES2022",
-		"jsx": "react-jsx",
-		"outdir": "dist",
-		"rootDir": "src"
+		"target": "ESNext",
+		"verbatimModuleSyntax": true
 	},
 	"include": ["src"],
 	"exclude": ["node_modules", "dist"]

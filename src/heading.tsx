@@ -31,26 +31,26 @@ Heading.H1 = (props: Readonly<HeadingProps>) => {
 }
 Heading.H2 = (props: Readonly<HeadingProps>) => {
 	return (
-		<h1
+		<h2
 			className={cn(
 				"scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
 				props.className,
 			)}
 		>
 			{props.children}
-		</h1>
+		</h2>
 	)
 }
 Heading.H3 = (props: Readonly<HeadingProps>) => {
 	return (
-		<h1
+		<h3
 			className={cn(
 				"scroll-m-20 text-2xl font-semibold tracking-tight",
 				props.className,
 			)}
 		>
 			{props.children}
-		</h1>
+		</h3>
 	)
 }
 Heading.H4 = (props: Readonly<HeadingProps>) => {
@@ -67,14 +67,14 @@ Heading.H4 = (props: Readonly<HeadingProps>) => {
 }
 Heading.H5 = (props: Readonly<HeadingProps>) => {
 	return (
-		<h4
+		<h5
 			className={cn(
 				"scroll-m-20 text-lg font-medium",
 				props.className,
 			)}
 		>
 			{props.children}
-		</h4>
+		</h5>
 	)
 }
 Heading.H6 = (props: Readonly<HeadingProps>) => {

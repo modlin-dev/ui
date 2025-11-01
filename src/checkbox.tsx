@@ -1,57 +1,75 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState, type ChangeEventHandler, type ReactElement, type ReactNode } from "react"
 import { cn } from "./utils"
+import { setConfig } from "next/config"
+
+export interface ViewProps {
+	children?: ReactNode
+	className?: string
+}
 
 export interface CheckboxProps {
-	checked?: boolean
-	onChange?(checked: boolean): void
 	disabled?: boolean
+	onChange?: ChangeEventHandler<HTMLInputElement> // web
+	onValueChange?(checked: boolean): void | Promise<void> // web
+	checked?: boolean
+	defaultChecked?: boolean
 	// loading?: boolean
 	label?: string
 
 	required?: boolean // web
 	name?: string // web
-	value?: string // web
 	id?: string // web
+	value?: string
 }
-export default function Checkbox(props: Readonly<CheckboxProps>) {
-	const [checked, setChecked] = useState<boolean>(props.checked ?? false)
-
-	const onChange = props.onChange
-	useEffect(() => {
-		if (onChange) onChange(checked)
-	}, [checked, onChange])
+export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<CheckboxProps> {
+	const input = useRef<HTMLInputElement>(null)
+	const button = useRef<HTMLInputElement>(null)
+	let checked = props.checked || props.defaultChecked || false
 
 	return (
 		<>
 			<input
+				ref={input}
 				type="checkbox"
-				checked={checked}
-				onChange={() => setChecked(v => !v)}
 				disabled={props.disabled}
-				aria-label={props.label}
+				onChange={e => {
+					checked = !checked
+					e.target.checked = checked
+					if (button.current) {
+						button.current.ariaChecked = checked ? "true" : "false"
+						button.current.setAttribute("data-state", checked ? "checked" : "unchecked")
+					}
+				}}
+				checked={checked}
+				defaultChecked={props.defaultChecked}
 				required={props.required}
+				aria-label={props.label}
 				name={props.name}
 				value={props.value}
 				id={props.id}
 				className="peer hidden"
 			/>
 			<button
+				ref={button}
 				type="button"
 				role="checkbox"
 				data-state={checked ? "checked" : "unchecked"}
 				aria-checked={checked}
-				onClick={() => setChecked(v => !v)}
+				onClick={async e => {
+					checked = !checked
+					if (input.current) input.current.checked = checked
+					e.currentTarget.ariaChecked = checked ? "true" : "false"
+					e.currentTarget.setAttribute("data-state", checked ? "checked" : "unchecked")
+				}}
 				disabled={props.disabled}
 				className={cn(
 					"w-4 h-4 rounded-sm hover:cursor-pointer text-background",
-					"transition transition-all transition-duration-150 ease",
-					"data-[state=unchecked]:bg-white data-[state=unchecked]:dark:bg-black",
-					"data-[state=checked]:bg-black data-[state=checked]:dark:bg-white",
-					"data-[state=checked]:disabled:bg-black/50 dark:data-[state=checked]:disabled:bg-white/50",
 					"data-[state=unchecked]:inset-ring",
-					"data-[state=unchecked]:inset-ring-black/50 data-[state=unchecked]:dark:inset-ring-white/50",
-					"data-[state=unchecked]:disabled:inset-ring-black/25 data-[state=unchecked]:dark:disabled:inset-ring-white/25",
+					"data-[state=unchecked]:bg-background data-[state=unchecked]:inset-ring-muted-foreground",
+					"data-[state=unchecked]:disabled:inset-ring-border",
+					"data-[state=checked]:bg-primary data-[state=checked]:disabled:bg-primary/50",
+					"transition transition-all transition-duration-150 ease",
 				)}
 			>
 				<svg width={16} height={16} viewBox="0 0 16 16" fill="none">

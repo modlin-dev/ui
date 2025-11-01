@@ -73,7 +73,7 @@ export const Card: React.FC<CardProps> = props => {
 				"flex flex-col",
 				size[props.size ?? "md"],
 				"bg-background",
-				"sm:inset-ring inset-ring-outline",
+				"sm:inset-ring inset-ring-border",
 				props.className,
 			)}
 		>

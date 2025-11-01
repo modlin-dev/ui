@@ -5,7 +5,7 @@ export interface AvatarProps extends ImageProps {
 	fallback: string
 }
 export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
-	const show = true
+	const show = false
 
 	return (
 		<span

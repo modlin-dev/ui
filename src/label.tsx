@@ -23,12 +23,7 @@ export default function Label(props: LabelProps) {
 		<label
 			htmlFor={props.htmlFor}
 			aria-label={props.label}
-			className={cn(
-				"flex items-center gap-2",
-				"peer-disabled:text-(--disabled) invalid:text-(--red) text-sm font-medium leading-4",
-				"select-none",
-				props.className,
-			)}
+			className={cn("flex items-center gap-2", "peer-disabled:text-disabled invalid:text-red text-sm/4 font-medium", "select-none", props.className)}
 		>
 			{props.children}
 		</label>

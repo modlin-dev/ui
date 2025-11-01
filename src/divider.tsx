@@ -6,10 +6,10 @@ export interface DividerProps {
 }
 export default function Divider(props: DividerProps) {
 	return (
-		<hr
+		<div
+			data-orientation={props.orientation ?? "horizontal"}
 			className={cn(
-				"border-(--outline)",
-				props.orientation === "vertical" ? "h-full border-r" : undefined,
+				"bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
 				props.className,
 			)}
 		/>

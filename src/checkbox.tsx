@@ -1,7 +1,6 @@
 "use client"
-import { useEffect, useRef, useState, type ChangeEventHandler, type ReactElement, type ReactNode } from "react"
+import { useRef, type ChangeEvent, type ReactElement, type ReactNode } from "react"
 import { cn } from "./utils"
-import { setConfig } from "next/config"
 
 export interface ViewProps {
 	children?: ReactNode
@@ -9,18 +8,29 @@ export interface ViewProps {
 }
 
 export interface CheckboxProps {
+    /** @android @ios @web */
 	disabled?: boolean
-	onChange?: ChangeEventHandler<HTMLInputElement> // web
-	onValueChange?(checked: boolean): void | Promise<void> // web
-	checked?: boolean
-	defaultChecked?: boolean
-	// loading?: boolean
+    /** @android @ios @web */
+    defaultChecked?: boolean
+    /** @android @ios @web */
+    checked?: boolean
+    /** @android @ios @web */
 	label?: string
-
-	required?: boolean // web
-	name?: string // web
-	id?: string // web
-	value?: string
+    /** @web */
+	required?: boolean
+    /** @web */
+	name?: string
+    /** @web */
+	id?: string
+    /** @web */
+    asChild?: boolean
+    /** @android @ios @web */
+	onChange?(checked: boolean): void
+    // note: dropped support for RHF to add native support
+    /** @deprecated @use checked */
+    value?: string
+    /** @deprecated @use onChange */
+    onValueChange?(event: ChangeEvent<HTMLInputElement>): void
 }
 export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<CheckboxProps> {
 	const input = useRef<HTMLInputElement>(null)

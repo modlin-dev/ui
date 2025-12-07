@@ -1,37 +1,89 @@
-import { type ChangeEvent, type FocusEvent, type InputEvent, type HTMLInputAutoCompleteAttribute, forwardRef } from "react"
-import { input_variant, type Variant } from "./global"
+import { type ChangeEvent, type FocusEvent, type HTMLInputAutoCompleteAttribute, forwardRef } from "react"
+import type { Variant } from "./globals"
 import { cn } from "./utils"
 
+export const input_variant: Record<Variant, string> = {
+	primary: cn(
+		"bg-background",
+		"placeholder:text-muted-foreground disabled:text-disabled",
+		// "inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
+		"border border-border disabled:border-disabled focus:border-primary/75",
+		"focus:ring-4 focus:ring-primary/10",
+		"invalid:inset-ring-red",
+		// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
+		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
+		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
+	),
+	secondary: cn(),
+	destructive: cn(
+		"bg-background",
+		"placeholder:text-muted-foreground disabled:text-disabled",
+		"inset-ring inset-ring-red/50 disabled:inset-ring-red/25 focus:inset-ring-red/75",
+		"focus:ring-4 focus:ring-red/10",
+		// "border border-red/50 disabled:border-red/25 focus:border-red",
+		"focus:ring-4 focus:ring-red/5",
+	),
+	outline: cn(),
+	ghost: cn(),
+	link: cn(),
+	none: cn("text-()"),
+}
+
+type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "file"
+type InputMode = "search" | "text" | "email" | "tel" | "url" | "none" | "numeric" | "decimal"
+type BlurEvent = FocusEvent<HTMLInputElement, Element>
+
 export interface InputProps {
-	variant?: Variant
-
-	type?: "text" | "password" | "email" | "number" | "tel" | "url" | "file"
-	inputMode?: "search" | "text" | "email" | "tel" | "url" | "none" | "numeric" | "decimal"
+    /** @android @ios @web */
 	placeholder?: string
+    /** @android @ios @web */
 	defaultValue?: string
-
-	name?: string
-	pattern?: string // validation
-	min?: number | string // validation
-	max?: number | string // validation
-	maxLength?: number // validation
-	minLength?: number // validation
-	required?: boolean // validation
-
-	readOnly?: boolean
-	disabled?: boolean
-
+    /** @android @ios @web */
+	inputMode?: InputMode
+    /** @android @ios @web */
 	value?: string
-	onChange?: (event: ChangeEvent<HTMLInputElement>) => void
-	onBlur?: (event: FocusEvent<HTMLInputElement>) => void
-	onInput?: (event: InputEvent<HTMLInputElement>) => void
-
-	id?: string
+    /** @android @ios @web */
+	readOnly?: boolean
+    /** @android @ios @web */
+	maxLength?: number
+    /** @android @ios @web */
+	autoCapitalize?: "none" | "sentences" | "words" | "characters"
+    /** @android @ios @web */
 	autoComplete?: HTMLInputAutoCompleteAttribute
-	// onChange?: (value: string) => void
-	className?: string
+    /** @android @ios @web */
+	autoCorrect?: boolean
+    /** @android @ios @web */
+	variant?: Variant
+    /** @web */
+	id?: string
+    /** @web */
+	type?: InputType
+    /** @web */
+	name?: string
+    /** @web */
+	required?: boolean // validation
+    /** @web */
+	disabled?: boolean
+    /** @web */
+	pattern?: string // validation
+    /** @web */
+	min?: number // validation
+    /** @web */
+	max?: number // validation
+    /** @web */
+	minLength?: number // validation
+    /** @web */
 	invalid?: boolean
+    /** @web */
 	describedby?: string
+    /** @web */
+	className?: string
+    /** @android @ios @web */
+	onChange?(event: ChangeEvent): void
+    /** @android @ios @web */
+	onFocus?(event: FocusEvent): void
+    /** @android @ios @web */
+	onBlur?(event: BlurEvent): void
 }
 const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) => {
 	const { onChange } = props
@@ -54,12 +106,15 @@ const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) =>
 			readOnly={props.readOnly}
 			disabled={props.disabled}
 			onChange={onChange}
-			onBlur={props.onBlur}
+            onFocus={props.onFocus}
+            onBlur={props.onBlur}
 			onInvalid={e => e.preventDefault()}
 			id={props.id}
+            autoCapitalize={props.autoCapitalize}
 			autoComplete={props.autoComplete}
-			data-invalid={props.invalid}
+            autoCorrect={props.autoCorrect ? "on" : "off"}
 			aria-describedby={props.describedby}
+			data-invalid={props.invalid}
 			className={cn(
 				"flex items-center w-full h-12 px-4",
 				"transition transition-duration-150 transition-[box-shadow] ease-in",

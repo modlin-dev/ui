@@ -2,22 +2,22 @@ import { cn } from "./utils"
 import { IconLoader2 } from "@tabler/icons-react"
 import type { MouseEvent, FocusEvent, ReactNode, ReactHTMLElement } from "react"
 import React from "react"
-import type { Variant, Variants } from "./global"
+import type { Variant, Size, Shape } from "./globals"
 
-const sizeMap = {
-	sm: cn("h-8 px-4 gap-x-1 text-sm rounded-full font-medium"),
-	md: cn("h-9 px-4.5 gap-x-1 text-sm rounded-full font-medium"),
-	lg: cn("h-11 px-5 gap-x-1 text-base rounded-full font-medium", "[&>svg]:size-4"),
-	xl: cn("h-12 px-6 gap-x-1 text-base rounded-full font-semibold", "[&>svg]:size-4"),
-	sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
-	md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
-	lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),
-	xl_: cn("h-12 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-4 [&>svg]:scale-125"),
-	icon: cn("p-2 rounded-full text-sm font-medium"),
-	iconr: cn("p-2 rounded-2xl text-sm font-medium"),
+const size: Record<Size, string> = {
+	sm: cn("h-8 px-4 gap-x-1 text-sm font-medium"),
+	md: cn("h-9 px-4.5 gap-x-1 text-sm font-medium"),
+	lg: cn("h-11 px-5 gap-x-1 text-base font-medium", "[&>svg]:size-4"),
+	xl: cn("h-12 px-6 gap-x-1 text-base font-semibold", "[&>svg]:size-4"),
+	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
+	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
+	// lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),
+	// xl_: cn("h-12 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-4 [&>svg]:scale-125"),
+	icon: cn("p-2 text-sm font-medium"),
+	// iconr: cn("p-2 rounded-2xl text-sm font-medium"),
 	none: cn("overflow-visible"),
 }
-const variant: Variants = {
+const variant: Record<Variant, string> = {
 	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/85 text-background",
 	secondary: "bg-secondary hover:bg-secondary/75",
 	destructive: "bg-red hover:bg-red/85 text-white",
@@ -32,43 +32,65 @@ const variant: Variants = {
 	// outline_red: "inset-ring inset-ring-(--red)/50 hover:bg-(--red)/5 text-(--red)",
 	// shadcn: "rounded-xl bg-(--primary) hover:bg-(--primary)/85 text-white dark:text-black",
 } as const
-const shapes = {
+const shape: Record<Shape, string> = {
 	square: "rounded-none",
-	rounded: "",
+	rounded: "rounded-2xl",
 	pill: "rounded-full",
 }
 export interface ButtonProps {
+    /** @android @ios @web */
+	disabled?: boolean // state
+    /** @android @ios @web */
+	loading?: boolean // state
+    /** @android @ios @web */
+	label?: string
+	/** @android @ios @web */
+	title?: string
+    /** @android @ios @web */
+	children?: ReactNode
+    /** @android @ios @web */
+	asChild?: boolean
+    /** @android @ios @web */
 	variant?: Variant
-	size?: keyof typeof sizeMap
-	shape?: "square" | "rounded" | "pill"
+    /** @android @ios @web */
+	size?: Size
+    /** @android @ios @web */
+	shape?: Shape
+    /** @android @ios */
+	haptics?: boolean
+	/** @android @ios */
+	full?: boolean // utility
+	/** @android @ios */
+	rounded?: number // utility
+    /** @web */
+	id?: string
+    /** @web */
+	type?: "button" | "reset" | "submit"
+    /** @web */
+	className?: string
+    /** @android @ios @web */
+	onPress?(event: MouseEvent): void | Promise<void>
+    /** @android @ios @web */
+	onPressIn?(event: MouseEvent): void | Promise<void>
+    /** @android @ios @web */
+	onPressOut?(event: MouseEvent): void | Promise<void>
+    /** @web */
+	onHover?(event: MouseEvent): void | Promise<void>
+    /** @web */
+	onFocus?(event: FocusEvent): void | Promise<void>
+    /** @web */
+	onBlur?(event: FocusEvent): void | Promise<void>
 	// tone?: "default" | "success" | "error" | "warning"
 	// elevation?: "none" | "xs" | "sm" | "md" | "lg" | "xl"
-
-	disabled?: boolean
-	loading?: boolean
-
-	label?: string
-	// haptics?: boolean
-
-	children?: ReactNode
-	onPress?: (event: MouseEvent) => void | Promise<void>
-	onHover?: (event: MouseEvent) => void | Promise<void> // Web
-	onFocus?: (event: FocusEvent) => void | Promise<void> // web
-	onBlur?: (event: FocusEvent) => void | Promise<void> // web
-
-	type?: "button" | "reset" | "submit"
-	id?: string
-	className?: string
-
-	asChild?: boolean
 }
 export default function Button(props: Readonly<ButtonProps>) {
 	const className = cn(
 		"line-clamp-1 flex items-center justify-center leading-none text-center",
 		"select-none hover:cursor-pointer disabled:hover:cursor-not-allowed",
 		"transition-[background-color] transition-duration-250 ease",
+		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
-		sizeMap[props.size ?? "xl"],
+        shape[props.shape ?? "pill"],
 		props.className,
 	)
 
@@ -80,6 +102,8 @@ export default function Button(props: Readonly<ButtonProps>) {
 			disabled: props.disabled,
 			"aria-label": props.label,
 			onClick: props.onPress,
+            onMouseDown: props.onPressIn,
+            onMouseUp: props.onPressOut,
 			onMouseOver: props.onHover,
 			onFocus: props.onFocus,
 			id: props.id,
@@ -93,13 +117,17 @@ export default function Button(props: Readonly<ButtonProps>) {
 			disabled={props.loading ? true : props.disabled}
 			aria-label={props.label}
 			onClick={props.onPress}
+            onMouseDown={props.onPressIn}
+            onMouseUp={props.onPressOut}
 			onMouseOver={props.onHover}
 			onFocus={props.onFocus}
 			onBlur={props.onBlur}
 			id={props.id}
 			className={className}
 		>
-			{props.loading ? <IconLoader2 className="animate-spin" /> : props.children}
+			{props.loading ? <IconLoader2 className="animate-spin" /> : (props.title || props.children)}
 		</button>
 	)
 }
+
+const d = <Button onP>Click</Button>

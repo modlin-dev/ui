@@ -17,7 +17,7 @@ export default function Heading(props: Readonly<HeadingProps>) {
 	)
 }
 
-Heading.H1 = (props: Readonly<HeadingProps>) => {
+export function Heading1(props: Readonly<HeadingProps>) {
 	return (
 		<h1
 			className={cn(
@@ -29,7 +29,7 @@ Heading.H1 = (props: Readonly<HeadingProps>) => {
 		</h1>
 	)
 }
-Heading.H2 = (props: Readonly<HeadingProps>) => {
+export function Heading2(props: Readonly<HeadingProps>) {
 	return (
 		<h2
 			className={cn(
@@ -41,7 +41,7 @@ Heading.H2 = (props: Readonly<HeadingProps>) => {
 		</h2>
 	)
 }
-Heading.H3 = (props: Readonly<HeadingProps>) => {
+export function Heading3(props: Readonly<HeadingProps>) {
 	return (
 		<h3
 			className={cn(
@@ -53,7 +53,7 @@ Heading.H3 = (props: Readonly<HeadingProps>) => {
 		</h3>
 	)
 }
-Heading.H4 = (props: Readonly<HeadingProps>) => {
+export function Heading4(props: Readonly<HeadingProps>) {
 	return (
 		<h4
 			className={cn(
@@ -65,7 +65,7 @@ Heading.H4 = (props: Readonly<HeadingProps>) => {
 		</h4>
 	)
 }
-Heading.H5 = (props: Readonly<HeadingProps>) => {
+export function Heading5(props: Readonly<HeadingProps>) {
 	return (
 		<h5
 			className={cn(
@@ -77,7 +77,7 @@ Heading.H5 = (props: Readonly<HeadingProps>) => {
 		</h5>
 	)
 }
-Heading.H6 = (props: Readonly<HeadingProps>) => {
+export function Heading6(props: Readonly<HeadingProps>) {
 	return (
 		<h6
 			className={cn(

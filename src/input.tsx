@@ -4,11 +4,11 @@ import { cn } from "./utils"
 
 export const input_variant: Record<Variant, string> = {
 	primary: cn(
-		"bg-background",
+		"bg-background/25 backdrop-blur-sm",
 		"placeholder:text-muted-foreground disabled:text-disabled",
-		// "inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
-		"border border-border disabled:border-disabled focus:border-primary/75",
-		"focus:ring-4 focus:ring-primary/10",
+		"inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
+		// "border border-border disabled:border-disabled focus:border-primary/75",
+		"focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
 		"invalid:inset-ring-red",
 		// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
 		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",

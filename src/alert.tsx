@@ -54,7 +54,7 @@ export function Alert(props: Readonly<AlertProps>) {
 			className={cn(
 				"grid grid-cols-[16px_1fr] auto-rows-auto gap-x-4 gap-y-1 items-center justify-center",
 				"p-4 rounded-2xl",
-				"inset-ring inset-ring-black/15 dark:inset-ring-white/10",
+				"inset-ring inset-ring-border",
 				props.className,
 			)}
 		>
@@ -68,7 +68,7 @@ Alert.Destructive = (props: Readonly<AlertProps>) => {
 			className={cn(
 				"grid grid-cols-[16px_1fr] auto-rows-auto gap-x-4 gap-y-1 items-center justify-center",
 				"p-4 rounded-2xl",
-				"inset-ring inset-ring-black/15 dark:inset-ring-white/10",
+				"inset-ring inset-ring-border",
 				"text-red-600 dark:text-red-400",
 				props.className,
 			)}

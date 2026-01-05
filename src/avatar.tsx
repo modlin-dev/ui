@@ -8,7 +8,7 @@ export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
 	const show = false
 
 	return (
-		<span className={cn("relative flex shrink-0 size-8 overflow-hidden rounded-full ring ring-(--outline) text-sm font-medium leading-none", props.className)}>
+		<span className={cn("relative flex shrink-0 size-8 overflow-hidden rounded-full inset-ring inset-ring-border text-sm font-medium leading-none", props.className)}>
 			{show ? (
 				<Image {...props} className="aspect-square size-full" />
 			) : (

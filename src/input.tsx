@@ -34,55 +34,55 @@ type InputMode = "search" | "text" | "email" | "tel" | "url" | "none" | "numeric
 type BlurEvent = FocusEvent<HTMLInputElement, Element>
 
 export interface InputProps {
-    /** @android @ios @web */
+	/** @android @ios @web */
 	placeholder?: string
-    /** @android @ios @web */
+	/** @android @ios @web */
 	defaultValue?: string
-    /** @android @ios @web */
+	/** @android @ios @web */
 	inputMode?: InputMode
-    /** @android @ios @web */
+	/** @android @ios @web */
 	value?: string
-    /** @android @ios @web */
+	/** @android @ios @web */
 	readOnly?: boolean
-    /** @android @ios @web */
+	/** @android @ios @web */
 	maxLength?: number
-    /** @android @ios @web */
+	/** @android @ios @web */
 	autoCapitalize?: "none" | "sentences" | "words" | "characters"
-    /** @android @ios @web */
+	/** @android @ios @web */
 	autoComplete?: HTMLInputAutoCompleteAttribute
-    /** @android @ios @web */
+	/** @android @ios @web */
 	autoCorrect?: boolean
-    /** @android @ios @web */
+	/** @android @ios @web */
 	variant?: Variant
-    /** @web */
+	/** @web */
 	id?: string
-    /** @web */
+	/** @web */
 	type?: InputType
-    /** @web */
+	/** @web */
 	name?: string
-    /** @web */
+	/** @web */
 	required?: boolean // validation
-    /** @web */
+	/** @web */
 	disabled?: boolean
-    /** @web */
+	/** @web */
 	pattern?: string // validation
-    /** @web */
+	/** @web */
 	min?: number | string // validation
-    /** @web */
+	/** @web */
 	max?: number | string // validation
-    /** @web */
+	/** @web */
 	minLength?: number // validation
-    /** @web */
+	/** @web */
 	invalid?: boolean
-    /** @web */
+	/** @web */
 	describedby?: string
-    /** @web */
+	/** @web */
 	className?: string
-    /** @android @ios @web */
-	onChange?(event: ChangeEvent): void
-    /** @android @ios @web */
-	onFocus?(event: FocusEvent): void
-    /** @android @ios @web */
+	/** @android @ios @web */
+	onChange?(event: ChangeEvent<HTMLInputElement>): void
+	/** @android @ios @web */
+	onFocus?(event: FocusEvent<HTMLInputElement>): void
+	/** @android @ios @web */
 	onBlur?(event: BlurEvent): void
 }
 const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) => {
@@ -106,13 +106,13 @@ const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) =>
 			readOnly={props.readOnly}
 			disabled={props.disabled}
 			onChange={onChange}
-            onFocus={props.onFocus}
-            onBlur={props.onBlur}
+			onFocus={props.onFocus}
+			onBlur={props.onBlur}
 			onInvalid={e => e.preventDefault()}
 			id={props.id}
-            autoCapitalize={props.autoCapitalize}
+			autoCapitalize={props.autoCapitalize}
 			autoComplete={props.autoComplete}
-            autoCorrect={props.autoCorrect ? "on" : "off"}
+			autoCorrect={props.autoCorrect ? "on" : "off"}
 			aria-describedby={props.describedby}
 			data-invalid={props.invalid}
 			className={cn(

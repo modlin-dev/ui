@@ -1,15 +1,17 @@
-import type { ChangeEvent, ReactNode } from "react"
+import { useRef, type ChangeEvent, type ReactNode } from "react"
 import { cn } from "./utils"
 
 export interface SelectProps {
-	children?: ReactNode
+	defaultValue?: string
 	name?: string
 	id?: string
+	children?: ReactNode
 	onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 export function Select(props: SelectProps) {
 	return (
 		<select
+			defaultValue={props.defaultValue}
 			name={props.name}
 			id={props.id}
 			onChange={props.onChange}
@@ -25,6 +27,9 @@ export function Select(props: SelectProps) {
 }
 
 export interface SelectItemProps {
+	disabled?: boolean
+	selected?: boolean
+	hidden?: boolean
 	value: string
 	children?: ReactNode
 	className?: string
@@ -38,6 +43,9 @@ export function SelectItem(props: SelectItemProps) {
 				props.className,
 			)}
 			value={props.value}
+			disabled={props.disabled}
+			selected={props.selected}
+			hidden={props.hidden}
 		>
 			{props.children}
 		</option>

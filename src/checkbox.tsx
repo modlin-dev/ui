@@ -34,7 +34,7 @@ export interface CheckboxProps {
 }
 export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<CheckboxProps> {
 	const input = useRef<HTMLInputElement>(null)
-	const button = useRef<HTMLInputElement>(null)
+	const button = useRef<HTMLButtonElement>(null)
 	let checked = props.checked || props.defaultChecked || false
 
 	return (

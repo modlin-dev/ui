@@ -87,7 +87,7 @@ export default function Button(props: Readonly<ButtonProps>) {
 	const className = cn(
 		"line-clamp-1 flex items-center justify-center leading-none text-center",
 		"select-none hover:cursor-pointer disabled:hover:cursor-not-allowed",
-		"transition-[background-color] transition-duration-250 ease",
+		"transition-[background-color] duration-250 ease",
 		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
         shape[props.shape ?? "pill"],
@@ -129,5 +129,3 @@ export default function Button(props: Readonly<ButtonProps>) {
 		</button>
 	)
 }
-
-const d = <Button onP>Click</Button>

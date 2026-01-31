@@ -67,9 +67,9 @@ export interface InputProps {
     /** @web */
 	pattern?: string // validation
     /** @web */
-	min?: number // validation
+	min?: number | string // validation
     /** @web */
-	max?: number // validation
+	max?: number | string // validation
     /** @web */
 	minLength?: number // validation
     /** @web */

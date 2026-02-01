@@ -19,13 +19,13 @@ const size: Record<Size, string> = {
 }
 const variant: Record<Variant, string> = {
 	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/85 text-background",
-	secondary: "bg-secondary hover:bg-secondary/75",
+	secondary: "bg-secondary hover:bg-secondary/75 backdrop-blur-sm",
 	destructive: "bg-red hover:bg-red/85 text-white",
 	outline: cn(
-		"bg-background inset-ring inset-ring-border",
+		"bg-background/25 backdrop-blur-sm inset-ring inset-ring-border",
 		"hover:bg-secondary active:bg-secondary focus-visible:inset-ring-muted-foreground disabled:bg-background disabled:text-muted-foreground",
 	),
-	ghost: "hover:bg-secondary",
+	ghost: "hover:bg-secondary backdrop-blur-sm",
 	link: "text-primary hover:underline",
 	none: cn(),
 	// jnsa: "bg-(--purple) hover:bg-(--purple)/90 text-white",

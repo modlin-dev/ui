@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FocusEvent, type HTMLInputAutoCompleteAttribute, forwardRef } from "react"
+import type { ChangeEvent, FocusEvent, HTMLInputAutoCompleteAttribute, InvalidEvent } from "react"
 import type { Variant } from "./globals"
 import { cn } from "./utils"
 
@@ -16,7 +16,7 @@ export const input_variant: Record<Variant, string> = {
 	),
 	secondary: cn(),
 	destructive: cn(
-		"bg-background",
+		"bg-background/25 backdrop-blur-sm",
 		"placeholder:text-muted-foreground disabled:text-disabled",
 		"inset-ring inset-ring-red/50 disabled:inset-ring-red/25 focus:inset-ring-red/75",
 		"focus:ring-4 focus:ring-red/10",
@@ -84,13 +84,12 @@ export interface InputProps {
 	onFocus?(event: FocusEvent<HTMLInputElement>): void
 	/** @android @ios @web */
 	onBlur?(event: BlurEvent): void
+	/** @web */
+	onInvalid?(event: InvalidEvent<HTMLInputElement>): void
 }
-const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) => {
-	const { onChange } = props
-
+const Input = (props: Readonly<InputProps>) => {
 	return (
 		<input
-			ref={ref}
 			type={props.type ?? "text"}
 			inputMode={props.inputMode}
 			placeholder={props.placeholder}
@@ -105,16 +104,16 @@ const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) =>
 			required={props.required}
 			readOnly={props.readOnly}
 			disabled={props.disabled}
-			onChange={onChange}
-			onFocus={props.onFocus}
-			onBlur={props.onBlur}
-			onInvalid={e => e.preventDefault()}
 			id={props.id}
 			autoCapitalize={props.autoCapitalize}
 			autoComplete={props.autoComplete}
 			autoCorrect={props.autoCorrect ? "on" : "off"}
 			aria-describedby={props.describedby}
 			data-invalid={props.invalid}
+			onChange={props.onChange}
+			onFocus={props.onFocus}
+			onBlur={props.onBlur}
+			onInvalid={props.onInvalid}
 			className={cn(
 				"flex items-center w-full h-12 px-4",
 				"transition transition-duration-150 transition-[box-shadow] ease-in",
@@ -124,5 +123,5 @@ const Input = forwardRef<HTMLInputElement, Readonly<InputProps>>((props, ref) =>
 			)}
 		/>
 	)
-})
+}
 export default Input

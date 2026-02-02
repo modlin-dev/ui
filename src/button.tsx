@@ -25,7 +25,7 @@ const variant: Record<Variant, string> = {
 		"bg-background/25 backdrop-blur-sm inset-ring inset-ring-border",
 		"hover:bg-secondary active:bg-secondary focus-visible:inset-ring-muted-foreground disabled:bg-background disabled:text-muted-foreground",
 	),
-	ghost: "hover:bg-secondary backdrop-blur-sm",
+	ghost: "hover:bg-secondary",
 	link: "text-primary hover:underline",
 	none: cn(),
 	// jnsa: "bg-(--purple) hover:bg-(--purple)/90 text-white",

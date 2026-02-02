@@ -1,11 +1,10 @@
 import { cn } from "./utils"
 
-export interface DividerProps {
+export interface SeperatorProps {
 	className?: string
 	orientation?: "vertical" | "horizontal"
 }
-/** @deprecated */
-export default function Divider(props: DividerProps) {
+export default function Seperator(props: SeperatorProps) {
 	return (
 		<div
 			data-orientation={props.orientation ?? "horizontal"}

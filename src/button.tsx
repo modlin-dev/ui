@@ -5,10 +5,14 @@ import React from "react"
 import type { Variant, Size, Shape } from "./globals"
 
 const size: Record<Size, string> = {
-	sm: cn("h-8 px-4 gap-x-1 text-sm font-medium"),
-	md: cn("h-9 px-4.5 gap-x-1 text-sm font-medium"),
-	lg: cn("h-11 px-5 gap-x-1 text-base font-medium", "[&>svg]:size-4"),
-	xl: cn("h-12 px-6 gap-x-1 text-base font-semibold", "[&>svg]:size-4"),
+	sm: cn(
+		"h-8 px-4 gap-1 text-sm font-medium",
+		"[&>svg]:size-4",
+		// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
+	),
+	md: cn("h-9 px-4.5 gap-2 text-sm font-medium", "[&>svg]:size-5"),
+	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
+	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-5"),
 	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
 	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
 	// lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),
@@ -18,7 +22,7 @@ const size: Record<Size, string> = {
 	none: cn("overflow-visible"),
 }
 const variant: Record<Variant, string> = {
-	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/85 text-background",
+	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/80 text-background",
 	secondary: "bg-secondary hover:bg-secondary/75 backdrop-blur-sm",
 	destructive: "bg-red hover:bg-red/85 text-white",
 	outline: cn(
@@ -38,59 +42,59 @@ const shape: Record<Shape, string> = {
 	pill: "rounded-full",
 }
 export interface ButtonProps {
-    /** @android @ios @web */
+	/** @android @ios @web */
 	disabled?: boolean // state
-    /** @android @ios @web */
+	/** @android @ios @web */
 	loading?: boolean // state
-    /** @android @ios @web */
+	/** @android @ios @web */
 	label?: string
 	/** @android @ios @web */
 	title?: string
-    /** @android @ios @web */
+	/** @android @ios @web */
 	children?: ReactNode
-    /** @android @ios @web */
+	/** @android @ios @web */
 	asChild?: boolean
-    /** @android @ios @web */
+	/** @android @ios @web */
 	variant?: Variant
-    /** @android @ios @web */
+	/** @android @ios @web */
 	size?: Size
-    /** @android @ios @web */
+	/** @android @ios @web */
 	shape?: Shape
-    /** @android @ios */
+	/** @android @ios */
 	haptics?: boolean
 	/** @android @ios */
 	full?: boolean // utility
 	/** @android @ios */
 	rounded?: number // utility
-    /** @web */
+	/** @web */
 	id?: string
-    /** @web */
+	/** @web */
 	type?: "button" | "reset" | "submit"
-    /** @web */
+	/** @web */
 	className?: string
-    /** @android @ios @web */
+	/** @android @ios @web */
 	onPress?(event: MouseEvent): void | Promise<void>
-    /** @android @ios @web */
+	/** @android @ios @web */
 	onPressIn?(event: MouseEvent): void | Promise<void>
-    /** @android @ios @web */
+	/** @android @ios @web */
 	onPressOut?(event: MouseEvent): void | Promise<void>
-    /** @web */
+	/** @web */
 	onHover?(event: MouseEvent): void | Promise<void>
-    /** @web */
+	/** @web */
 	onFocus?(event: FocusEvent): void | Promise<void>
-    /** @web */
+	/** @web */
 	onBlur?(event: FocusEvent): void | Promise<void>
 	// tone?: "default" | "success" | "error" | "warning"
 	// elevation?: "none" | "xs" | "sm" | "md" | "lg" | "xl"
 }
 export default function Button(props: Readonly<ButtonProps>) {
 	const className = cn(
-		"line-clamp-1 flex items-center justify-center leading-none text-center",
+		"flex items-center justify-center leading-none text-center truncate",
 		"select-none hover:cursor-pointer disabled:hover:cursor-not-allowed",
-		"transition-[background-color] duration-250 ease",
+	 	"transition duration-250 ease",
 		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
-        shape[props.shape ?? "pill"],
+		shape[props.shape ?? "pill"],
 		props.className,
 	)
 
@@ -102,8 +106,8 @@ export default function Button(props: Readonly<ButtonProps>) {
 			disabled: props.disabled,
 			"aria-label": props.label,
 			onClick: props.onPress,
-            onMouseDown: props.onPressIn,
-            onMouseUp: props.onPressOut,
+			onMouseDown: props.onPressIn,
+			onMouseUp: props.onPressOut,
 			onMouseOver: props.onHover,
 			onFocus: props.onFocus,
 			id: props.id,
@@ -117,15 +121,15 @@ export default function Button(props: Readonly<ButtonProps>) {
 			disabled={props.loading ? true : props.disabled}
 			aria-label={props.label}
 			onClick={props.onPress}
-            onMouseDown={props.onPressIn}
-            onMouseUp={props.onPressOut}
+			onMouseDown={props.onPressIn}
+			onMouseUp={props.onPressOut}
 			onMouseOver={props.onHover}
 			onFocus={props.onFocus}
 			onBlur={props.onBlur}
 			id={props.id}
 			className={className}
 		>
-			{props.loading ? <IconLoader2 className="animate-spin" /> : (props.title || props.children)}
+				{props.loading ? <IconLoader2 className="animate-spin" /> : props.title || props.children}
 		</button>
 	)
 }

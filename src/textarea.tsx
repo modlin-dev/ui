@@ -33,13 +33,11 @@ export default function Textarea(props: Readonly<TextareaProps>) {
 			}}
 			className={cn(
 				"transition-duration-150 transition-all ease-in",
-				"h-12 rounded-2xl px-4",
+				"h-12 rounded-2xl px-4 py-2.5",
 				"flex items-center",
-				"bg-white/25 backdrop-blur-lg dark:bg-black/25",
-				"placeholder:text-black/50 placeholder:dark:text-white/50",
-				"disabled:text-black/25 disabled:dark:text-white/25",
-				"inset-ring inset-ring-black/25 dark:inset-ring-white/25",
-				"focus:inset-ring-black/50 focus:dark:inset-ring-white/50",
+				"placeholder:text-muted-foreground",
+				"disabled:text-disabled",
+				"inset-ring inset-ring-border focus:inset-ring-primary/75 focus:ring-4 focus:ring-primary/15",
 				props.className,
 			)}
 		/>

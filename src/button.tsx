@@ -12,7 +12,7 @@ const size: Record<Size, string> = {
 	),
 	md: cn("h-9 px-4.5 gap-2 text-sm font-medium", "[&>svg]:size-5"),
 	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
-	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-5"),
+	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4 [&>svg]:scale-125"),
 	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
 	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
 	// lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),

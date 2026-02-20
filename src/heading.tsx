@@ -1,7 +1,7 @@
 import { cn } from "./utils"
 
 export interface HeadingProps {
-	children: React.ReactNode
+	children?: React.ReactNode
 	className?: string
 }
 export default function Heading(props: Readonly<HeadingProps>) {

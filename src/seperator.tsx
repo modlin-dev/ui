@@ -6,10 +6,10 @@ export interface SeperatorProps {
 }
 export default function Seperator(props: SeperatorProps) {
 	return (
-		<div
+		<hr
 			data-orientation={props.orientation ?? "horizontal"}
 			className={cn(
-				"bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px",
+				"border-0 bg-border data-[orientation=horizontal]:w-full data-[orientation=horizontal]:h-px data-[orientation=vertical]:w-px data-[orientation=vertical]:h-full",
 				props.className,
 			)}
 		/>

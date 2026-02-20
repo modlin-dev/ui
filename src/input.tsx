@@ -116,7 +116,7 @@ const Input = (props: Readonly<InputProps>) => {
 			onInvalid={props.onInvalid}
 			className={cn(
 				"flex items-center w-full h-12 px-4",
-				"transition transition-duration-150 transition-[box-shadow] ease-in",
+				"transition duration-250 ease",
 				"peer rounded-2xl",
 				input_variant[props.variant ?? "primary"],
 				props.className,

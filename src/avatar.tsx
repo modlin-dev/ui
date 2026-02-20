@@ -23,11 +23,11 @@ export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
 	return (
 		<span
 			className={cn(
-				"relative flex shrink-0 size-8 overflow-hidden rounded-full bg-background border border-border text-sm font-medium leading-none",
+				"relative flex shrink-0 size-8 overflow-hidden rounded-full bg-background inset-ring inset-ring-border text-sm font-medium leading-none",
 				props.className,
 			)}
 		>
-			<Image width={32} height={32} onError={() => setError(true)} {...props} className={cn("aspect-square size-full", props.className)} />
+			<Image width={32} height={32} onError={() => setError(true)} {...props} className={cn("size-full", props.className)} />
 		</span>
 	)
 }

@@ -5,11 +5,8 @@ import React from "react"
 import type { Variant, Size, Shape } from "./globals"
 
 const size: Record<Size, string> = {
-	sm: cn(
-		"h-8 px-4 gap-1 text-sm font-medium",
-		"[&>svg]:size-4",
-		// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
-	),
+	sm: cn("h-8 px-4 gap-1 text-sm", "[&>svg]:size-4"),
+	// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
 	md: cn("h-9 px-4.5 gap-2 text-sm font-medium", "[&>svg]:size-5"),
 	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
 	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4 [&>svg]:scale-125"),
@@ -91,7 +88,7 @@ export default function Button(props: Readonly<ButtonProps>) {
 	const className = cn(
 		"flex items-center justify-center leading-none text-center truncate",
 		"select-none hover:cursor-pointer disabled:hover:cursor-not-allowed",
-	 	"transition duration-250 ease",
+		"transition duration-250 ease",
 		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
 		shape[props.shape ?? "pill"],
@@ -129,7 +126,7 @@ export default function Button(props: Readonly<ButtonProps>) {
 			id={props.id}
 			className={className}
 		>
-				{props.loading ? <IconLoader2 className="animate-spin" /> : props.title || props.children}
+			{props.loading ? <IconLoader2 className="animate-spin" /> : props.title || props.children}
 		</button>
 	)
 }

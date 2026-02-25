@@ -34,5 +34,5 @@ export function AccordionTrigger(props: AccordionTriggerProps) {
 
 export interface AccordionContentProps extends ViewProps {}
 export function AccordionContent(props: AccordionContentProps) {
-	return <p className={cn("mb-5", props.className)}>{props.children}</p>
+	return <p className={cn("mb-5 text-muted-foreground", props.className)}>{props.children}</p>
 }

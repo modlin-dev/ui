@@ -1,8 +1,8 @@
 {
 	"$schema": "https://json.schemastore.org/package",
 	"name": "@modlin/ui",
-	"description": "A lightweight UI library built on the Suffix design system for consistent, fast, and elegant interfaces.",
-	"version": "0.0.252",
+	"description": "Lightweight UI library built on the Motive design system for consistent, fast, and elegant interfaces.",
+	"version": "0.0.253",
 	"main": "src/index.ts",
 	"type": "module",
 	"exports": {

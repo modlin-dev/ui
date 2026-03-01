@@ -13,7 +13,7 @@ export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
 		return (
 			<span
 				className={cn(
-					"relative flex shrink-0 overflow-hidden rounded-full bg-background ring ring-border text-sm font-medium leading-none",
+					"relative flex shrink-0 overflow-hidden size-8 rounded-full bg-background ring ring-border text-sm font-medium leading-none",
 					props.className,
 				)}
 			>

@@ -2,9 +2,9 @@ import type { ChangeEvent, FocusEvent, HTMLInputAutoCompleteAttribute, InvalidEv
 import type { Variant } from "./globals"
 import { cn } from "./utils"
 
-export const input_variant: Record<Variant, string> = {
+const variants: Record<Variant, string> = {
 	primary: cn(
-		"bg-background/25 backdrop-blur-sm",
+		"bg-background",
 		"placeholder:text-muted-foreground disabled:text-disabled",
 		"inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
 		// "border border-border disabled:border-disabled focus:border-primary/75",
@@ -14,7 +14,17 @@ export const input_variant: Record<Variant, string> = {
 		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
 		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
 	),
-	secondary: cn(),
+	secondary: cn(
+		"bg-secondary",
+		"placeholder:text-muted-foreground disabled:text-disabled",
+		"inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
+		// "border border-border disabled:border-disabled focus:border-primary/75",
+		"focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
+		"invalid:inset-ring-red",
+		// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
+		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
+		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
+	),
 	destructive: cn(
 		"bg-background/25 backdrop-blur-sm",
 		"placeholder:text-muted-foreground disabled:text-disabled",
@@ -27,6 +37,14 @@ export const input_variant: Record<Variant, string> = {
 	ghost: cn(),
 	link: cn(),
 	none: cn("text-()"),
+}
+
+const sizes = {
+	sm: cn(),
+	md: cn("h-9 px-3 rounded-[9px] text-sm"),
+	lg: cn(),
+	xl: cn("h-12 px-4 rounded-2xl"),
+	none: cn(),
 }
 
 type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "file"
@@ -54,6 +72,8 @@ export interface InputProps {
 	autoCorrect?: boolean
 	/** @android @ios @web */
 	variant?: Variant
+	/** @android @ios @web */
+	size?: keyof typeof sizes
 	/** @web */
 	id?: string
 	/** @web */
@@ -115,10 +135,10 @@ const Input = (props: Readonly<InputProps>) => {
 			onBlur={props.onBlur}
 			onInvalid={props.onInvalid}
 			className={cn(
-				"flex items-center w-full h-12 px-4",
+				"peer flex items-center w-full",
 				"transition duration-250 ease",
-				"peer rounded-2xl",
-				input_variant[props.variant ?? "primary"],
+				variants[props.variant ?? "primary"],
+				sizes[props.size ?? "xl"],
 				props.className,
 			)}
 		/>

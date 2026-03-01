@@ -1,15 +1,6 @@
-import type { CSSProperties, ReactNode } from "react"
+import type { ViewProps } from "./globals"
 import { cn } from "./utils"
-import Seperator from "./seperator"
 
-export interface ViewProps {
-	/** @android @ios @web */
-	children?: ReactNode
-	/** @android @ios @web */
-	style?: CSSProperties
-	/** @web */
-	className?: string
-}
 export interface InputProps extends ViewProps {
 	defaultValue?: string
 	value?: string

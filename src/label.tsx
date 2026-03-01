@@ -8,6 +8,8 @@ export interface LabelProps {
 
 	className?: string
 
+    onPress?: React.MouseEventHandler<HTMLLabelElement>
+
 	// size?: "sm" | "md" | "lg"
 	// tone?: "default" | "muted" | "error" | "success" | "warning"
 	// weight?: "regular" | "medium" | "bold"
@@ -22,6 +24,7 @@ export default function Label(props: LabelProps) {
 	return (
 		<label
 			htmlFor={props.htmlFor}
+            onClick={props.onPress}
 			aria-label={props.label}
 			className={cn("flex items-center gap-2", "peer-disabled:text-disabled invalid:text-red text-sm/4 font-medium", "select-none", props.className)}
 		>

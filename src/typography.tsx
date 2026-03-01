@@ -68,3 +68,16 @@ export const Muted = forwardRef<HTMLParagraphElement, TypographyProps>(
 		)
 	},
 )
+
+export const Caption = forwardRef<HTMLParagraphElement, TypographyProps>(
+	(props, ref) => {
+		return (
+			<p
+				ref={ref}
+				className={cn("font-normal text-muted-foreground text-xs select-none", props.className)}
+			>
+				{props.children}
+			</p>
+		)
+	},
+)

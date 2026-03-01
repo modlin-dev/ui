@@ -9,7 +9,7 @@ const size: Record<Size, string> = {
 	// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
 	md: cn("h-9 px-4.5 gap-2 text-sm font-medium", "[&>svg]:size-5"),
 	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
-	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4 [&>svg]:scale-125"),
+	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4"),
 	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
 	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
 	// lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),
@@ -20,7 +20,7 @@ const size: Record<Size, string> = {
 }
 const variant: Record<Variant, string> = {
 	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/80 text-background",
-	secondary: "bg-secondary hover:bg-secondary/75 backdrop-blur-sm",
+	secondary: "bg-secondary hover:bg-secondary/75",
 	destructive: "bg-red/15 hover:bg-red/20 text-red",
 	outline: cn(
 		"inset-ring inset-ring-border",

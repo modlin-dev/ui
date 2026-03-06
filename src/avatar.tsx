@@ -3,13 +3,15 @@ import { useState } from "react"
 import { cn } from "./utils"
 import Image, { type ImageProps } from "next/image"
 
-export interface AvatarProps extends ImageProps {
-    size?: number
+export interface AvatarProps extends Omit<ImageProps, "src"> {
+	src?: string | URL
+	size?: number
 	fallback: string
 }
 export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
 	const [error, setError] = useState(false)
-	if (!error) {
+	const src = props.src
+	if (src && !error) {
 		return (
 			<span
 				className={cn(
@@ -17,7 +19,14 @@ export default function Avatar({ fallback, ...props }: Readonly<AvatarProps>) {
 					props.className,
 				)}
 			>
-				<Image width={props.size ?? 32} height={props.size ?? 32} onError={() => setError(true)} {...props} className={cn("size-full", props.className)} />
+				<Image
+					width={props.size ?? 32}
+					height={props.size ?? 32}
+					onError={() => setError(true)}
+					{...props}
+					src={src instanceof URL ? src.pathname : src}
+					className={cn("size-full", props.className)}
+				/>
 			</span>
 		)
 	}

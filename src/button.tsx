@@ -2,21 +2,23 @@ import { cn } from "./utils"
 import { IconLoader2 } from "@tabler/icons-react"
 import type { MouseEvent, FocusEvent, ReactNode, ReactHTMLElement } from "react"
 import React from "react"
-import type { Variant, Size, Shape } from "./globals"
+import type { Variant, Shape } from "./globals"
 
-const size: Record<Size, string> = {
+const size = {
 	sm: cn("h-8 px-4 gap-1 text-sm", "[&>svg]:size-4"),
-	// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
-	md: cn("h-9 px-4.5 gap-2 text-sm font-medium", "[&>svg]:size-5"),
+	md: cn("h-9 px-4.5 gap-2.25 text-sm font-medium", "[&>svg]:size-4.5"),
 	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
 	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4"),
+	"icon-sm": "size-8 p-2 text-sm",
+	"icon-md": "size-9 p-2.25 text-sm",
+	icon: "h-12 p-2 text-sm font-medium",
+	none: "overflow-visible",
+	// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
 	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
 	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
 	// lg_: cn("h-11 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-5"),
 	// xl_: cn("h-12 px-4 gap-x-2 text-base rounded-2xl font-medium", "[&>svg]:size-4 [&>svg]:scale-125"),
-	icon: cn("p-2 text-sm font-medium"),
 	// iconr: cn("p-2 rounded-2xl text-sm font-medium"),
-	none: cn("overflow-visible"),
 }
 const variant: Record<Variant, string> = {
 	primary: "bg-primary disabled:bg-primary/60 hover:bg-primary/85 active:bg-primary/80 text-background",
@@ -28,15 +30,42 @@ const variant: Record<Variant, string> = {
 	),
 	ghost: "hover:bg-secondary disabled:text-muted-foreground",
 	link: "text-primary hover:underline",
-	none: cn(),
+	none: "",
 	// jnsa: "bg-(--purple) hover:bg-(--purple)/90 text-white",
 	// outline_red: "inset-ring inset-ring-(--red)/50 hover:bg-(--red)/5 text-(--red)",
 	// shadcn: "rounded-xl bg-(--primary) hover:bg-(--primary)/85 text-white dark:text-black",
 } as const
-const shape: Record<Shape, string> = {
-	square: "rounded-none",
-	rounded: "rounded-2xl",
-	pill: "rounded-full",
+const shape: Record<Shape, Record<keyof typeof size, string>> = {
+	square: {
+		sm: "rounded-none",
+		md: "rounded-none",
+		lg: "rounded-none",
+		xl: "rounded-none",
+		"icon-sm": "rounded-none",
+        "icon-md": "rounded-none",
+		icon: "rounded-none",
+		none: "",
+	},
+	rounded: {
+		sm: "rounded-lg px-2.5",
+		md: "rounded-[9px] px-3",
+		lg: "rounded-[14px] px-3",
+		xl: "rounded-2xl px-4",
+		"icon-sm": "rounded-lg",
+        "icon-md": "rounded-[9px]",
+		icon: "rounded-2xl",
+		none: "",
+	},
+	pill: {
+		sm: "rounded-full",
+		md: "rounded-full",
+		lg: "rounded-full",
+		xl: "rounded-full",
+		"icon-sm": "rounded-full",
+        "icon-md": "rounded-full",
+		icon: "rounded-full",
+		none: "",
+	},
 }
 export interface ButtonProps {
 	/** @android @ios @web */
@@ -54,7 +83,7 @@ export interface ButtonProps {
 	/** @android @ios @web */
 	variant?: Variant
 	/** @android @ios @web */
-	size?: Size
+	size?: keyof typeof size
 	/** @android @ios @web */
 	shape?: Shape
 	/** @android @ios */
@@ -76,6 +105,10 @@ export interface ButtonProps {
 	/** @android @ios @web */
 	onPressOut?(event: MouseEvent): void | Promise<void>
 	/** @web */
+	onMouseEnter?(event: MouseEvent): void | Promise<void>
+	/** @web */
+	onMouseLeave?(event: MouseEvent): void | Promise<void>
+	/** @web */
 	onHover?(event: MouseEvent): void | Promise<void>
 	/** @web */
 	onFocus?(event: FocusEvent): void | Promise<void>
@@ -91,7 +124,7 @@ export default function Button(props: Readonly<ButtonProps>) {
 		"transition duration-250 ease",
 		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
-		shape[props.shape ?? "pill"],
+		shape[props.shape ?? "pill"][props.size ?? "xl"],
 		props.className,
 	)
 
@@ -105,8 +138,11 @@ export default function Button(props: Readonly<ButtonProps>) {
 			onClick: props.onPress,
 			onMouseDown: props.onPressIn,
 			onMouseUp: props.onPressOut,
+            onMouseEnter: props.onMouseEnter,
+            onMouseLeave: props.onMouseLeave,
 			onMouseOver: props.onHover,
 			onFocus: props.onFocus,
+            onBlur: props.onBlur,
 			id: props.id,
 			className: cn(className, children.props.className),
 		})
@@ -120,6 +156,8 @@ export default function Button(props: Readonly<ButtonProps>) {
 			onClick={props.onPress}
 			onMouseDown={props.onPressIn}
 			onMouseUp={props.onPressOut}
+            onMouseEnter={props.onMouseEnter}
+            onMouseLeave={props.onMouseLeave}
 			onMouseOver={props.onHover}
 			onFocus={props.onFocus}
 			onBlur={props.onBlur}

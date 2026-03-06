@@ -1,15 +1,39 @@
 import { cn } from "./utils"
 import type { ReactNode } from "react"
 
-const variants = {
-	primary: "",
-	secondary: "",
+const variant = {
+	primary: "bg-primary text-background",
+	secondary: "bg-secondary text-foreground",
 	destructive: "",
 	outline: "",
 }
+const size = {
+	sm: "h-5 px-2 text-xs [&>svg]:size-3",
+	md: "h-5 px-2 text-xs [&>svg]:size-3",
+	lg: "h-8 px-4 text-sm [&>svg]:size-4",
+}
+const shape = {
+	square: {
+		sm: "rounded-none",
+		md: "rounded-none",
+		lg: "rounded-none",
+	},
+	rounded: {
+		sm: "rounded-sm px-1",
+		md: "rounded-md px-1.5",
+		lg: "rounded-lg px-2",
+	},
+	pill: {
+		sm: "rounded-full",
+		md: "rounded-full",
+		lg: "rounded-full",
+	},
+}
 
 export interface BadgeProps {
-	variant?: keyof typeof variants
+	variant?: keyof typeof variant
+	size?: keyof typeof size
+	shape?: keyof typeof shape
 	children: ReactNode | number
 	className?: string
 }
@@ -17,11 +41,12 @@ export default function Badge(props: Readonly<BadgeProps>) {
 	return (
 		<span
 			className={cn(
-				"flex items-center justify-center gap-1",
-				"h-5 px-2 rounded-full [&>svg]:size-3",
-				"text-xs font-medium leading-none whitespace-nowrap",
-				"bg-black dark:bg-white text-white dark:text-black",
+				"flex items-center justify-center gap-1 select-none",
+				"rounded-full leading-none whitespace-nowrap",
 				typeof props.children === "number" ? "w-5" : "w-fit",
+				variant[props.variant ?? "primary"],
+				size[props.size ?? "md"],
+				shape[props.shape ?? "pill"][props.size ?? "md"],
 				props.className,
 			)}
 		>

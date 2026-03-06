@@ -5,9 +5,15 @@ import { IconChevronDown } from "@tabler/icons-react"
 import { cn } from "./utils"
 import type { ViewProps } from "./globals"
 import React, { useState } from "react"
-import { Postpone } from "next/dist/server/app-render/dynamic-rendering"
 
-export interface SidebarProps extends ViewProps {}
+const _size = {
+    sm: "p-2 gap-2",
+    lg: "p-4 gap-4"
+}
+export interface SidebarProps extends ViewProps {
+    collasped?: boolean
+    size?: "sm" | "lg"
+}
 export function Sidebar(props: SidebarProps) {
 	return <div className={cn("flex flex-col w-full h-full p-4 gap-4 sm:max-w-68", props.className)}>{props.children}</div>
 }
@@ -17,7 +23,7 @@ export function SidebarHeader(props: SidebarHeaderProps) {
 }
 export interface SidebarContentProps extends ViewProps {}
 export function SidebarContent(props: SidebarContentProps) {
-	return <div className={cn("flex flex-col gap-4 mb-auto", props.className)}>{props.children}</div>
+	return <div className={cn("flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto [scrollbar-width:none]", props.className)}>{props.children}</div>
 }
 export interface SidebarFooterProps extends ViewProps {}
 export function SidebarFooter(props: SidebarFooterProps) {
@@ -35,18 +41,16 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
 	return (
 		<Button
 			variant="ghost"
-			size={props.collapsed ? "icon" : "md"}
+			size={props.collapsed ? "icon-md" : "md"}
+			shape="rounded"
 			{...props}
 			className={cn(
-				"justify-start truncate",
-				"p-2.25 gap-2.25 rounded-[18px] corner-squircle",
-				"[&>svg]:size-4.5",
+				"justify-start p-2.25 truncate [&>svg]:shrink-0",
 				// "[&>svg]:size-5",
 				// "sm:[&>svg]:size-4 sm:[&>svg]:scale-115",
 				// "p-3 gap-3 rounded-xl",
 				// "sm:h-9 sm:text-sm/4 sm:p-2.5 sm:gap-2.5 sm:rounded-[10px]",
 				props.selected && "bg-secondary",
-				props.collapsed && "size-9",
 				props.className,
 			)}
 		>
@@ -63,19 +67,15 @@ export const SidebarGroupLabel = (props: SidebarGroupLabel) => {
 		<Label
 			htmlFor=""
 			{...props}
-			className="justify-end gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate hover:text-foreground hover:cursor-pointer transition duration-250 ease overflow-hidden z-1"
+			className="justify-end gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate hover:text-foreground hover:cursor-pointer transition duration-250 ease [&>svg]:size-4.5 z-1"
 		>
-			<p className="shrink-1 grow-1">{props.children}</p>
-			<IconChevronDown size={16} className={cn("transition shrink-0", !props.expanded && "-rotate-90")} />
+			{props.children}
+			<IconChevronDown className={cn("shrink-0 ml-auto transition duration-250 ease", !props.expanded && "-rotate-90")} />
 		</Label>
 	)
 }
 export const SidebarGroupContent = (props: { children?: ReactNode; className?: string }) => {
-	return (
-		<ul className={cn("flex flex-col di", props.className)}>
-			{props.children}
-		</ul>
-	)
+	return <ul className={cn("flex flex-col appear-top", props.className)}>{props.children}</ul>
 }
 
 export interface SidebarGroupProps {
@@ -93,7 +93,7 @@ export const SidebarGroup = (props: SidebarGroupProps) => {
 	})
 	const content_children = children[1] as ReactHTMLElement<HTMLElement>
 	const content = React.cloneElement(content_children, {
-		className: cn(expanded ? "dropdown" : "dropup", content_children.props.className),
+		className: cn(!expanded && "animate-hidden", content_children.props.className),
 	})
 
 	return (

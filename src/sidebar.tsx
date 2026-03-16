@@ -1,22 +1,19 @@
-import type { ReactElement, ReactHTMLElement, ReactNode } from "react"
+import type { ReactElement, ReactNode } from "react"
 import Button, { type ButtonProps } from "./button"
 import Label, { type LabelProps } from "./label"
 import { IconChevronDown } from "@tabler/icons-react"
 import { cn } from "./utils"
 import type { ViewProps } from "./globals"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
-const _size = {
-    sm: "p-2 gap-2",
-    lg: "p-4 gap-4"
-}
 export interface SidebarProps extends ViewProps {
-    collasped?: boolean
-    size?: "sm" | "lg"
+	collasped?: boolean
+	size?: "sm" | "lg"
 }
 export function Sidebar(props: SidebarProps) {
 	return <div className={cn("flex flex-col w-full h-full p-4 gap-4 sm:max-w-68", props.className)}>{props.children}</div>
 }
+
 export interface SidebarHeaderProps extends ViewProps {}
 export function SidebarHeader(props: SidebarHeaderProps) {
 	return <div className={cn("flex flex-col gap-4", props.className)}>{props.children}</div>
@@ -30,9 +27,11 @@ export function SidebarFooter(props: SidebarFooterProps) {
 	return <div className={cn("flex flex-col gap-4", props.className)}>{props.children}</div>
 }
 
-export const SidebarMenuItem = (props: { className?: string; children?: ReactNode }) => {
+export interface SidebarMenuItemProps extends ViewProps {}
+export const SidebarMenuItem = (props: SidebarMenuItemProps) => {
 	return <li className={cn("flex flex-col", props.className)}>{props.children}</li>
 }
+
 export interface SidebarMenuButtonProps extends ButtonProps {
 	selected?: boolean
 	collapsed?: boolean
@@ -59,10 +58,10 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
 	)
 }
 
-export interface SidebarGroupLabel extends Omit<LabelProps, "htmlFor"> {
+export interface SidebarGroupLabelProps extends Omit<LabelProps, "htmlFor"> {
 	expanded?: boolean
 }
-export const SidebarGroupLabel = (props: SidebarGroupLabel) => {
+export const SidebarGroupLabel = (props: SidebarGroupLabelProps) => {
 	return (
 		<Label
 			htmlFor=""
@@ -74,27 +73,50 @@ export const SidebarGroupLabel = (props: SidebarGroupLabel) => {
 		</Label>
 	)
 }
-export const SidebarGroupContent = (props: { children?: ReactNode; className?: string }) => {
-	return <ul className={cn("flex flex-col appear-top", props.className)}>{props.children}</ul>
+
+export interface SidebarGroupContentProps extends ViewProps {
+	expanded?: boolean
+}
+export const SidebarGroupContent = (props: SidebarGroupContentProps) => {
+	return (
+		<ul hidden={!(props.expanded ?? true)} className={cn("flex flex-col", props.className)}>
+			{props.children}
+		</ul>
+	)
 }
 
 export interface SidebarGroupProps {
+    id?: string
 	expanded?: boolean
 	children?: ReactNode
 	className?: string
 }
 export const SidebarGroup = (props: SidebarGroupProps) => {
-	const [expanded, setExpanded] = useState(props.expanded)
-
 	const children = React.Children.toArray(props.children)
-	const label = React.cloneElement(children[0] as ReactElement<SidebarGroupLabel>, {
+	const first = children[0] as ReactElement<SidebarGroupLabelProps>
+	const last = children[1] as ReactElement<SidebarGroupContentProps>
+
+	const [expanded, setExpanded] = useState(props.expanded)
+	const [mounted, setMounted] = useState(false)
+
+	const key = props.id ?? "group"
+	const label = React.cloneElement(first, {
 		expanded,
 		onPress: () => setExpanded(!expanded),
 	})
-	const content_children = children[1] as ReactHTMLElement<HTMLElement>
-	const content = React.cloneElement(content_children, {
-		className: cn(!expanded && "animate-hidden", content_children.props.className),
+	const content = React.cloneElement(last, {
+		expanded,
 	})
+
+	useEffect(() => {
+		setMounted(true)
+		const saved = localStorage.getItem(key)
+		if (saved) setExpanded(saved === "true")
+	}, [key])
+
+	useEffect(() => {
+		if (mounted) localStorage.setItem(key, expanded ? "true" : "false")
+	}, [expanded, mounted, key])
 
 	return (
 		<div className={cn("flex flex-col", props.className)}>

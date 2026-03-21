@@ -61,6 +61,11 @@ body {
     font-size: 16px;
 }
 
+*::selection {
+    background-color: var(--foreground);
+    color: var(--background);
+}
+
 button:focus {
     outline: none;
 }

@@ -5,7 +5,7 @@ import React from "react"
 import type { Variant, Shape } from "./globals"
 
 const size = {
-	sm: cn("h-8 px-4 gap-1 text-sm", "[&>svg]:size-4"),
+	sm: cn("h-8 px-4 gap-2 text-sm", "[&>svg]:size-4"),
 	md: cn("h-9 px-4.5 gap-2.25 text-sm font-medium", "[&>svg]:size-4.5"),
 	lg: cn("h-11 px-5 gap-2 text-base font-medium", "[&>svg]:size-4"),
 	xl: cn("h-12 px-6 gap-2 text-base font-semibold", "[&>svg]:size-4"),
@@ -47,7 +47,7 @@ const shape: Record<Shape, Record<keyof typeof size, string>> = {
 		none: "",
 	},
 	rounded: {
-		sm: "rounded-lg px-2.5",
+		sm: "rounded-lg px-3",
 		md: "rounded-[9px] px-3",
 		lg: "rounded-[14px] px-3",
 		xl: "rounded-2xl px-4",

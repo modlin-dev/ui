@@ -5,7 +5,7 @@ const variant = {
 	primary: "bg-primary text-background",
 	secondary: "bg-secondary text-foreground",
 	destructive: "",
-	outline: "",
+	outline: "inset-ring inset-ring-border",
 }
 const size = {
 	sm: "h-5 px-2 text-xs [&>svg]:size-3",
@@ -21,7 +21,7 @@ const shape = {
 	rounded: {
 		sm: "rounded-sm px-1",
 		md: "rounded-md px-1.5",
-		lg: "rounded-lg px-2",
+		lg: "rounded-lg px-3",
 	},
 	pill: {
 		sm: "rounded-full",
@@ -41,7 +41,7 @@ export default function Badge(props: Readonly<BadgeProps>) {
 	return (
 		<span
 			className={cn(
-				"flex items-center justify-center gap-1 select-none",
+				"flex items-center justify-center gap-2 select-none",
 				"rounded-full leading-none whitespace-nowrap",
 				typeof props.children === "number" ? "w-5" : "w-fit",
 				variant[props.variant ?? "primary"],

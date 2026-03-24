@@ -12,7 +12,7 @@ const size = {
 	"icon-sm": "size-8 p-2 text-sm",
 	"icon-md": "size-9 p-2.25 text-sm",
 	icon: "h-12 p-2 text-sm font-medium",
-	none: "overflow-visible",
+	none: "overflow-visible"
 	// "[&>svg:first-child]:-ml-1.5 [&>svg:first-child]:mr-1 [&>svg:last-child]:-mr-1.5 [&>svg:last-child]:mr-1",
 	// sm_: "h-8 px-2.5 rounded-lg text-sm font-medium [&>svg]:size-4",
 	// md_: cn("h-9 px-3.5 gap-x-1 text-sm rounded-xl font-medium", "[&>svg]:size-4"),
@@ -26,11 +26,11 @@ const variant: Record<Variant, string> = {
 	destructive: "bg-red/15 hover:bg-red/20 text-red",
 	outline: cn(
 		"inset-ring inset-ring-border",
-		"hover:bg-secondary active:bg-secondary focus-visible:inset-ring-muted-foreground disabled:bg-background disabled:text-muted-foreground",
+		"hover:bg-secondary active:bg-secondary focus-visible:inset-ring-muted-foreground disabled:bg-background disabled:text-muted-foreground"
 	),
 	ghost: "hover:bg-secondary disabled:text-muted-foreground",
 	link: "text-primary hover:underline",
-	none: "",
+	none: ""
 	// jnsa: "bg-(--purple) hover:bg-(--purple)/90 text-white",
 	// outline_red: "inset-ring inset-ring-(--red)/50 hover:bg-(--red)/5 text-(--red)",
 	// shadcn: "rounded-xl bg-(--primary) hover:bg-(--primary)/85 text-white dark:text-black",
@@ -42,9 +42,9 @@ const shape: Record<Shape, Record<keyof typeof size, string>> = {
 		lg: "rounded-none",
 		xl: "rounded-none",
 		"icon-sm": "rounded-none",
-        "icon-md": "rounded-none",
+		"icon-md": "rounded-none",
 		icon: "rounded-none",
-		none: "",
+		none: ""
 	},
 	rounded: {
 		sm: "rounded-lg px-3",
@@ -52,9 +52,9 @@ const shape: Record<Shape, Record<keyof typeof size, string>> = {
 		lg: "rounded-[14px] px-3",
 		xl: "rounded-2xl px-4",
 		"icon-sm": "rounded-lg",
-        "icon-md": "rounded-[9px]",
+		"icon-md": "rounded-[9px]",
 		icon: "rounded-2xl",
-		none: "",
+		none: ""
 	},
 	pill: {
 		sm: "rounded-full",
@@ -62,10 +62,10 @@ const shape: Record<Shape, Record<keyof typeof size, string>> = {
 		lg: "rounded-full",
 		xl: "rounded-full",
 		"icon-sm": "rounded-full",
-        "icon-md": "rounded-full",
+		"icon-md": "rounded-full",
 		icon: "rounded-full",
-		none: "",
-	},
+		none: ""
+	}
 }
 export interface ButtonProps {
 	/** @android @ios @web */
@@ -125,7 +125,7 @@ export default function Button(props: Readonly<ButtonProps>) {
 		size[props.size ?? "xl"],
 		variant[props.variant ?? "primary"],
 		shape[props.shape ?? "pill"][props.size ?? "xl"],
-		props.className,
+		props.className
 	)
 
 	if (props.asChild) {
@@ -138,13 +138,13 @@ export default function Button(props: Readonly<ButtonProps>) {
 			onClick: props.onPress,
 			onMouseDown: props.onPressIn,
 			onMouseUp: props.onPressOut,
-            onMouseEnter: props.onMouseEnter,
-            onMouseLeave: props.onMouseLeave,
+			onMouseEnter: props.onMouseEnter,
+			onMouseLeave: props.onMouseLeave,
 			onMouseOver: props.onHover,
 			onFocus: props.onFocus,
-            onBlur: props.onBlur,
+			onBlur: props.onBlur,
 			id: props.id,
-			className: cn(className, children.props.className),
+			className: cn(className, children.props.className)
 		})
 	}
 
@@ -156,15 +156,22 @@ export default function Button(props: Readonly<ButtonProps>) {
 			onClick={props.onPress}
 			onMouseDown={props.onPressIn}
 			onMouseUp={props.onPressOut}
-            onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave}
+			onMouseEnter={props.onMouseEnter}
+			onMouseLeave={props.onMouseLeave}
 			onMouseOver={props.onHover}
 			onFocus={props.onFocus}
 			onBlur={props.onBlur}
 			id={props.id}
 			className={className}
 		>
-			{props.loading ? <IconLoader2 className="animate-spin" /> : props.title || props.children}
+			{props.loading ? (
+				<>
+					{props.title || props.children}
+					<IconLoader2 className="animate-spin" />
+				</>
+			) : (
+				props.title || props.children
+			)}
 		</button>
 	)
 }

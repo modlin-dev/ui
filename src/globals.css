@@ -40,7 +40,7 @@
         --secondary: hsla(0, 0%, 100%, 0.12);
 
         --red: rgb(253, 99, 102);
-        --yellow: hsl(54, 100%, 63%);
+        --yellow: oklch(90.5% 0.182 98.111);
         --green: #33c995;
         --cyan: hsl(190, 100%, 70%);
         --blue: #7075f6;

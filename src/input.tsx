@@ -6,7 +6,7 @@ const variants: Record<Variant, string> = {
 	primary: cn(
 		"bg-background",
 		"placeholder:text-muted-foreground disabled:text-disabled",
-		"inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
+		"inset-ring inset-ring-border focus:inset-ring-primary/75",
 		// "border border-border disabled:border-disabled focus:border-primary/75",
 		"focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
 		"invalid:inset-ring-red",

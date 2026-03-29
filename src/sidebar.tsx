@@ -1,3 +1,4 @@
+"use client"
 import type { ReactElement, ReactNode } from "react"
 import Button, { type ButtonProps } from "./button"
 import Label, { type LabelProps } from "./label"

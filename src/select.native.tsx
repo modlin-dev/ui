@@ -3,10 +3,10 @@ import { cn } from "./utils"
 import type { ViewProps } from "./globals"
 
 const size = {
-	sm: "h-8 px-2.5 text-sm rounded-lg",
-	md: "h-9 px-3 rounded-[9px] text-sm",
-	lg: "h-11 px-3 rounded-[14px]",
-	xl: "h-12 px-4 rounded-2xl"
+	sm: "gap-2.5 h-8 px-2.5 text-sm rounded-lg",
+	md: "gap-3 h-9 px-3 rounded-[9px] text-sm",
+	lg: "gap-3 h-11 px-3 rounded-[14px]",
+	xl: "gap-4 h-12 px-4 rounded-2xl"
 }
 
 export interface SelectProps extends ViewProps {
@@ -47,9 +47,9 @@ export interface SelectItemProps {
 export function SelectItem(props: SelectItemProps) {
 	return (
 		<option
-			dir="rtl"
+			// dir="rtl"
 			className={cn(
-				"justify-between gap-4 h-9 min-h-9 px-3 rounded-lg text-foreground hover:bg-secondary focus:bg-secondary checked:bg-secondary",
+				"gap-3 h-9 min-h-9 px-3 rounded-lg text-foreground hover:bg-secondary focus:bg-secondary checked:bg-secondary",
 				"transition duration-150 ease-out",
 				props.className
 			)}

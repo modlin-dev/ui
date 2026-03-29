@@ -7,6 +7,11 @@ export const size = {
 	lg: cn(),
 	xl: cn("min-h-12 rounded-2xl px-4 py-3")
 }
+export const variant = { 
+    primary: cn(),
+    secondary: cn(),
+    none: cn(),
+}
 
 export interface TextareaProps {
 	type?: "text" | "password" | "email" | "number" | "tel" | "url" | "file"
@@ -21,6 +26,7 @@ export interface TextareaProps {
 	onChange?: (value: string) => void
 	width?: number | string
 	size?: keyof typeof size
+    variant?: keyof typeof variant
 	className?: string
 }
 export default function Textarea(props: Readonly<TextareaProps>) {

@@ -47,7 +47,7 @@ type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "fil
 type InputMode = "search" | "text" | "email" | "tel" | "url" | "none" | "numeric" | "decimal"
 type BlurEvent = FocusEvent<HTMLInputElement, Element>
 
-export interface TextInputProps extends VariantProps<typeof variants> {
+export interface TextInputProps extends VariantProps<typeof textInputVariants> {
 	/** @android @ios @web */
 	placeholder?: string
 	/** @android @ios @web */
@@ -154,7 +154,7 @@ export function InputGroup(props: InputGroupProps) {
 	return (
 		<span
 			className={cn(
-				variants({
+				textInputVariants({
 					variant: props.variant,
 					size: props.size,
 					className: props.className

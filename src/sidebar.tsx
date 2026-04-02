@@ -2,10 +2,11 @@
 import type { ReactElement, ReactNode } from "react"
 import Button, { type ButtonProps } from "./button"
 import Label, { type LabelProps } from "./label"
-import { IconChevronDown } from "@tabler/icons-react"
+import { IconChevronDown, IconLoader2 } from "@tabler/icons-react"
 import { cn } from "./utils"
 import type { ViewProps } from "./globals"
 import React, { useEffect, useState } from "react"
+import { Skeleton } from "./skeleton"
 
 export interface SidebarProps extends ViewProps {
 	collasped?: boolean
@@ -51,7 +52,7 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
 				// "p-3 gap-3 rounded-xl",
 				// "sm:h-9 sm:text-sm/4 sm:p-2.5 sm:gap-2.5 sm:rounded-[10px]",
 				props.selected && "bg-secondary",
-				props.className,
+				props.className
 			)}
 		>
 			{props.children}
@@ -77,17 +78,26 @@ export const SidebarGroupLabel = (props: SidebarGroupLabelProps) => {
 
 export interface SidebarGroupContentProps extends ViewProps {
 	expanded?: boolean
+	loading?: boolean
 }
 export const SidebarGroupContent = (props: SidebarGroupContentProps) => {
 	return (
 		<ul hidden={!(props.expanded ?? true)} className={cn("flex flex-col", props.className)}>
 			{props.children}
+			{props.loading && (
+				<SidebarMenuItem>
+					<SidebarMenuButton className="text-muted-foreground">
+						<Skeleton className="size-4.5 rounded-full" />
+						<Skeleton className="w-full h-4" />
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+			)}
 		</ul>
 	)
 }
 
 export interface SidebarGroupProps {
-    id?: string
+	id?: string
 	expanded?: boolean
 	children?: ReactNode
 	className?: string
@@ -103,10 +113,10 @@ export const SidebarGroup = (props: SidebarGroupProps) => {
 	const key = props.id ?? "group"
 	const label = React.cloneElement(first, {
 		expanded,
-		onPress: () => setExpanded(!expanded),
+		onPress: () => setExpanded(!expanded)
 	})
 	const content = React.cloneElement(last, {
-		expanded,
+		expanded
 	})
 
 	useEffect(() => {

@@ -61,7 +61,7 @@ export const Muted = forwardRef<HTMLParagraphElement, TypographyProps>(
 		return (
 			<p
 				ref={ref}
-				className={cn("text-muted-foreground text-sm", props.className)}
+				className={cn("text-sm text-muted-foreground", props.className)}
 			>
 				{props.children}
 			</p>

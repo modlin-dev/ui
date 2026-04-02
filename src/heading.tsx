@@ -1,6 +1,7 @@
 import { cn } from "./utils"
 
 export interface HeadingProps {
+    first?: boolean
 	children?: React.ReactNode
 	className?: string
 }
@@ -82,6 +83,7 @@ export function Heading6(props: Readonly<HeadingProps>) {
 		<h6
 			className={cn(
 				"scroll-m-20 text-base font-medium",
+                props.first && "leading-none mb-1",
 				props.className,
 			)}
 		>

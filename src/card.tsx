@@ -52,18 +52,16 @@ export function CardAction(props: Readonly<CardAction>) {
 const size = {
 	md: "p-4 gap-4 rounded-2xl",
 	lg: "p-6 gap-6 rounded-2xl",
-	xl: "p-8 gap-8 rounded-4xl",
+	xl: "p-8 gap-8 rounded-4xl"
 }
 
 export interface CardProps {
-	size?: "lg" | "xl"
+	size?: keyof typeof size
 	children?: React.ReactNode
 	className?: string
 }
 export const Card: React.FC<CardProps> = props => {
-	return (
-		<div className={cn("flex flex-col", size[props.size ?? "md"], "bg-background", "inset-ring inset-ring-border", props.className)}>{props.children}</div>
-	)
+	return <div className={cn("flex flex-col", size[props.size ?? "md"], "bg-background inset-ring inset-ring-border", props.className)}>{props.children}</div>
 }
 
 export default Card

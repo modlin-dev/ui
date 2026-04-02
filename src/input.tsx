@@ -1,69 +1,61 @@
-import type { ChangeEvent, FocusEvent, HTMLInputAutoCompleteAttribute, InvalidEvent } from "react"
-import type { Variant } from "./globals"
+import type { ChangeEvent, FocusEvent, HTMLInputAutoCompleteAttribute, InvalidEvent, ReactNode } from "react"
 import { cn } from "./utils"
+import { cva, type VariantProps } from "class-variance-authority"
 
-const variants: Record<Variant, string> = {
-	primary: cn(
-		"bg-background",
-		"placeholder:text-muted-foreground disabled:text-disabled",
-		"inset-ring inset-ring-border focus:inset-ring-primary/75",
-		// "border border-border disabled:border-disabled focus:border-primary/75",
-		"focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
-		"invalid:inset-ring-red",
-		// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
-		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
-		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
-	),
-	secondary: cn(
-		"bg-secondary",
-		"placeholder:text-muted-foreground disabled:text-disabled",
-		"inset-ring inset-ring-border disabled:inset-ring-disabled focus:inset-ring-primary/75",
-		// "border border-border disabled:border-disabled focus:border-primary/75",
-		"focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
-		"invalid:inset-ring-red",
-		// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
-		"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
-		"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10",
-	),
-	destructive: cn(
-		"bg-background/25 backdrop-blur-sm",
-		"placeholder:text-muted-foreground disabled:text-disabled",
-		"inset-ring inset-ring-red/50 disabled:inset-ring-red/25 focus:inset-ring-red/75",
-		"focus:ring-4 focus:ring-red/10",
-		// "border border-red/50 disabled:border-red/25 focus:border-red",
-		"focus:ring-4 focus:ring-red/5",
-	),
-	outline: cn(),
-	ghost: cn(),
-	link: cn(),
-	none: cn("text-()"),
-}
-
-const sizes = {
-	sm: cn("h-8 px-3 rounded-lg text-sm"),
-	md: cn("h-9 px-3 rounded-[9px] text-sm"),
-	lg: cn(),
-	xl: cn("h-12 px-4 rounded-2xl"),
-	none: cn(),
-}
+export const textInputVariants = cva("peer flex items-center w-full transition duration-250 ease", {
+	variants: {
+		variant: {
+			primary: cn(
+				"bg-background inset-ring inset-ring-border placeholder:text-muted-foreground disabled:text-disabled focus:inset-ring-primary/75 focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15 invalid:inset-ring-red",
+				"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
+				"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10"
+			),
+			// "border border-border disabled:border-disabled focus:border-primary/75",
+			// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
+			secondary: cn(
+				"bg-secondary inset-ring inset-ring-border placeholder:text-muted-foreground disabled:text-disabled focus:inset-ring-primary/75 focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15 invalid:inset-ring-red",
+				"data-[invalid=true]:inset-ring-red/50 data-[invalid=true]:focus:inset-ring-red/75",
+				"data-[invalid=true]:focus:ring-4 data-[invalid=true]:focus:ring-red/10"
+			),
+			// "border border-border disabled:border-disabled focus:border-primary/75",
+			// "data-[invalid=true]:border data-[invalid=true]:border-red/50 data-[invalid=true]:focus:border-red",
+			destructive: cn(
+				"bg-background/25 backdrop-blur-sm",
+				"placeholder:text-muted-foreground disabled:text-disabled",
+				"inset-ring inset-ring-red/50 disabled:inset-ring-red/25 focus:inset-ring-red/75",
+				"focus:ring-4 focus:ring-red/10",
+				// "border border-red/50 disabled:border-red/25 focus:border-red",
+				"focus:ring-4 focus:ring-red/5"
+			),
+			none: ""
+		},
+		size: {
+			sm: "gap-2 h-8 px-3 rounded-lg text-sm",
+			md: "gap-2.25 h-9 px-3 rounded-[9px] text-sm",
+			lg: "gap-2.75 h-11 px-3.5 rounded-xl",
+			xl: "gap-3 h-12 px-4 rounded-2xl",
+			none: ""
+		}
+	},
+	defaultVariants: {
+		variant: "primary",
+		size: "xl"
+	}
+})
 
 type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "file"
 type InputMode = "search" | "text" | "email" | "tel" | "url" | "none" | "numeric" | "decimal"
 type BlurEvent = FocusEvent<HTMLInputElement, Element>
 
-export interface InputProps {
+export interface TextInputProps extends VariantProps<typeof variants> {
 	/** @android @ios @web */
 	placeholder?: string
 	/** @android @ios @web */
 	defaultValue?: string
 	/** @android @ios @web */
-	inputMode?: InputMode
-	/** @android @ios @web */
 	value?: string
 	/** @android @ios @web */
-	readOnly?: boolean
-	/** @android @ios @web */
-	maxLength?: number
+	inputMode?: InputMode
 	/** @android @ios @web */
 	autoCapitalize?: "none" | "sentences" | "words" | "characters"
 	/** @android @ios @web */
@@ -71,9 +63,11 @@ export interface InputProps {
 	/** @android @ios @web */
 	autoCorrect?: boolean
 	/** @android @ios @web */
-	variant?: Variant
+	autoFocus?: boolean
 	/** @android @ios @web */
-	size?: keyof typeof sizes
+	readOnly?: boolean
+	/** @android @ios @web */
+	maxLength?: number
 	/** @web */
 	id?: string
 	/** @web */
@@ -101,47 +95,73 @@ export interface InputProps {
 	/** @android @ios @web */
 	onChange?(event: ChangeEvent<HTMLInputElement>): void
 	/** @android @ios @web */
+	onChangeText?(text: string): void
+	/** @android @ios @web */
 	onFocus?(event: FocusEvent<HTMLInputElement>): void
 	/** @android @ios @web */
 	onBlur?(event: BlurEvent): void
 	/** @web */
 	onInvalid?(event: InvalidEvent<HTMLInputElement>): void
 }
-const Input = (props: Readonly<InputProps>) => {
+export function TextInput(props: TextInputProps) {
+	const onChangeText = props.onChangeText
 	return (
 		<input
 			type={props.type ?? "text"}
-			inputMode={props.inputMode}
 			placeholder={props.placeholder}
 			defaultValue={props.defaultValue}
 			value={props.value}
+			inputMode={props.inputMode}
+			autoCapitalize={props.autoCapitalize}
+			autoComplete={props.autoComplete}
+			autoCorrect={props.autoCorrect ? "on" : "off"}
+			autoFocus={props.autoFocus}
+			readOnly={props.readOnly}
+			maxLength={props.maxLength}
 			name={props.name}
 			min={props.min}
 			max={props.max}
 			minLength={props.minLength}
-			maxLength={props.maxLength}
 			pattern={props.pattern}
 			required={props.required}
-			readOnly={props.readOnly}
 			disabled={props.disabled}
 			id={props.id}
-			autoCapitalize={props.autoCapitalize}
-			autoComplete={props.autoComplete}
-			autoCorrect={props.autoCorrect ? "on" : "off"}
 			aria-describedby={props.describedby}
 			data-invalid={props.invalid}
-			onChange={props.onChange}
+			onChange={onChangeText ? e => onChangeText(e.target.value) : props.onChange}
 			onFocus={props.onFocus}
 			onBlur={props.onBlur}
 			onInvalid={props.onInvalid}
 			className={cn(
-				"peer flex items-center w-full",
-				"transition duration-250 ease",
-				variants[props.variant ?? "primary"],
-				sizes[props.size ?? "xl"],
-				props.className,
+				textInputVariants({
+					variant: props.variant,
+					size: props.size,
+					className: props.className
+				})
 			)}
 		/>
 	)
 }
-export default Input
+export default TextInput
+
+export function Prompt(props: TextInputProps) {
+	return <TextInput variant="none" size="none" {...props} />
+}
+export interface InputGroupProps extends TextInputProps {
+	children?: ReactNode
+}
+export function InputGroup(props: InputGroupProps) {
+	return (
+		<span
+			className={cn(
+				variants({
+					variant: props.variant,
+					size: props.size,
+					className: props.className
+				})
+			)}
+		>
+			{props.children}
+		</span>
+	)
+}

@@ -6,10 +6,18 @@ const size = {
 	sm: "gap-2.5 h-8 px-2.5 text-sm rounded-lg",
 	md: "gap-3 h-9 px-3 rounded-[9px] text-sm",
 	lg: "gap-3 h-11 px-3 rounded-[14px]",
-	xl: "gap-4 h-12 px-4 rounded-2xl"
+	xl: "gap-4 h-12 px-4 rounded-2xl",
+    none: "",
+}
+const variant = {
+	primary:
+		"bg-background/25 backdrop-blur-sm inset-ring inset-ring-border open:inset-ring-primary/75 open:ring-4 open:ring-primary/10 dark:open:ring-primary/15 focus:inset-ring-primary/75 focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
+	secondary: "",
+	none: ""
 }
 
 export interface SelectProps extends ViewProps {
+	variant?: keyof typeof variant
 	size?: keyof typeof size
 	defaultValue?: string
 	name?: string
@@ -23,13 +31,7 @@ export function Select(props: SelectProps) {
 			name={props.name}
 			id={props.id}
 			onChange={props.onChange}
-			className={cn(
-				"flex items-center bg-background/25 backdrop-blur-sm inset-ring inset-ring-border",
-				"open:inset-ring-primary/75 open:ring-4 open:ring-primary/10 dark:open:ring-primary/15 focus:inset-ring-primary/75 focus:ring-4 focus:ring-primary/10 dark:focus:ring-primary/15",
-				"transition duration-150 ease-in",
-				size[props.size ?? "xl"],
-				props.className
-			)}
+			className={cn("flex items-center", "transition duration-150 ease-in", variant[props.variant ?? "primary"], size[props.size ?? "xl"], props.className)}
 		>
 			{props.children}
 		</select>

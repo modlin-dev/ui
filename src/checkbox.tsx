@@ -8,34 +8,32 @@ export interface ViewProps {
 }
 
 export interface CheckboxProps {
-    /** @android @ios @web */
+	/** @android @ios @web */
 	disabled?: boolean
-    /** @android @ios @web */
-    defaultChecked?: boolean
-    /** @android @ios @web */
-    checked?: boolean
-    /** @android @ios @web */
+	/** @android @ios @web */
+	defaultChecked?: boolean
+	/** @android @ios @web */
+	checked?: boolean
+	/** @android @ios @web */
 	label?: string
-    /** @web */
+	/** @web */
 	required?: boolean
-    /** @web */
+	/** @web */
 	name?: string
-    /** @web */
+	/** @web */
 	id?: string
-    /** @web */
-    asChild?: boolean
-    /** @android @ios @web */
+	/** @web */
+	asChild?: boolean
+	/** @android @ios @web */
 	onChange?(checked: boolean): void
-    // note: dropped support for RHF to add native support
-    /** @deprecated @use checked */
-    value?: string
-    /** @deprecated @use onChange */
-    onValueChange?(event: ChangeEvent<HTMLInputElement>): void
+	// note: dropped support for RHF to add native support
+	/** @deprecated @use checked */
+	value?: string
+	/** @deprecated @use onChange */
+	onValueChange?(event: ChangeEvent<HTMLInputElement>): void
 }
 export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<CheckboxProps> {
 	const input = useRef<HTMLInputElement>(null)
-	const button = useRef<HTMLButtonElement>(null)
-	let checked = props.checked || props.defaultChecked || false
 
 	return (
 		<>
@@ -44,14 +42,14 @@ export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<C
 				type="checkbox"
 				disabled={props.disabled}
 				onChange={e => {
-					checked = !checked
-					e.target.checked = checked
-					if (button.current) {
-						button.current.ariaChecked = checked ? "true" : "false"
-						button.current.setAttribute("data-state", checked ? "checked" : "unchecked")
-					}
+					// const checked = e.target.checked
+					// if (button.current) {
+					// button.current.ariaChecked = checked ? "true" : "false"
+					// button.current.setAttribute("data-state", checked ? "checked" : "unchecked")
+					// }
+					props.onChange?.(e.target.checked)
 				}}
-				checked={checked}
+				checked={props.checked}
 				defaultChecked={props.defaultChecked}
 				required={props.required}
 				aria-label={props.label}
@@ -61,25 +59,27 @@ export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<C
 				className="peer hidden"
 			/>
 			<button
-				ref={button}
 				type="button"
 				role="checkbox"
-				data-state={checked ? "checked" : "unchecked"}
-				aria-checked={checked}
+				// data-state={checked ? "checked" : "unchecked"}
+				aria-checked={input.current?.checked}
 				onClick={async e => {
-					checked = !checked
-					if (input.current) input.current.checked = checked
-					e.currentTarget.ariaChecked = checked ? "true" : "false"
-					e.currentTarget.setAttribute("data-state", checked ? "checked" : "unchecked")
+					if (input.current) {
+						input.current.checked = !input.current.checked
+						props.onChange?.(input.current.checked)
+					}
+					// e.currentTarget.ariaChecked = checked ? "true" : "false"
+					// e.currentTarget.setAttribute("data-state", checked ? "checked" : "unchecked")
 				}}
 				disabled={props.disabled}
 				className={cn(
 					"w-4 h-4 rounded-sm hover:cursor-pointer text-background",
-					"data-[state=unchecked]:inset-ring",
-					"data-[state=unchecked]:bg-background data-[state=unchecked]:inset-ring-muted-foreground",
-					"data-[state=unchecked]:disabled:inset-ring-border",
-					"data-[state=checked]:bg-primary data-[state=checked]:disabled:bg-primary/50",
-					"transition transition-all transition-duration-150 ease",
+					"bg-background inset-ring inset-ring-muted-foreground peer-checked:bg-primary peer-checked:inset-ring-0 disabled:inset-ring-border peer-checked:disabled:bg-primary/50"
+					// "data-[state=unchecked]:inset-ring",
+					// "data-[state=unchecked]:bg-background data-[state=unchecked]:inset-ring-muted-foreground",
+					// "data-[state=unchecked]:disabled:inset-ring-border",
+					// "data-[state=checked]:bg-primary data-[state=checked]:disabled:bg-primary/50",
+					// "transition duration-150 ease"
 				)}
 			>
 				<svg width={16} height={16} viewBox="0 0 16 16" fill="none">

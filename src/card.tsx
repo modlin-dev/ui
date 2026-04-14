@@ -1,52 +1,26 @@
+import type { ViewProps } from "./globals"
 import { cn } from "./utils"
 import type * as React from "react"
 
-export interface CardHeaderProps {
-	children?: React.ReactNode
-	className?: string
-}
+export interface CardHeaderProps extends ViewProps {}
 export const CardHeader: React.FC<CardHeaderProps> = props => {
-	return (
-		<header data-slot="card-header" className={cn("flex flex-col gap-4", props.className)}>
-			{props.children}
-		</header>
-	)
+	return <header {...props} className={cn("flex flex-col gap-4", props.className)} />
 }
 
-export interface CardContentProps {
-	children?: React.ReactNode
-	className?: string
-}
+export interface CardContentProps extends ViewProps {}
 export const CardContent: React.FC<CardContentProps> = props => {
-	return (
-		<div data-slot="card-content" className={cn("flex", props.className)}>
-			{props.children}
-		</div>
-	)
+	return <div {...props} className={cn("flex", props.className)} />
 }
 
-export interface CardFooterProps {
-	children?: React.ReactNode
-	className?: string
-}
+export interface CardFooterProps extends ViewProps {}
 export const CardFooter: React.FC<CardFooterProps> = props => {
-	return (
-		<footer data-slot="card-footer" className={cn("flex [.border-t]:pt-4", props.className)}>
-			{props.children}
-		</footer>
-	)
+	return <footer {...props} className={cn("flex [.border-t]:pt-4", props.className)} />
 }
 
-export interface CardAction {
-	children?: React.ReactNode
-	className?: string
+export interface CardAction extends ViewProps {
 }
 export function CardAction(props: Readonly<CardAction>) {
-	return (
-		<div data-slot="card-action" className={cn(props.className)}>
-			{props.children}
-		</div>
-	)
+	return <div {...props} className={cn(props.className)} />
 }
 
 const size = {
@@ -55,13 +29,11 @@ const size = {
 	xl: "p-8 gap-8 rounded-4xl"
 }
 
-export interface CardProps {
+export interface CardProps extends ViewProps {
 	size?: keyof typeof size
-	children?: React.ReactNode
-	className?: string
 }
 export const Card: React.FC<CardProps> = props => {
-	return <div className={cn("flex flex-col", size[props.size ?? "md"], "bg-background inset-ring inset-ring-border", props.className)}>{props.children}</div>
+	return <article {...props} className={cn("flex flex-col", size[props.size ?? "md"], "bg-background inset-ring inset-ring-border", props.className)} />
 }
 
 export default Card

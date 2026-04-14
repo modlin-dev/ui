@@ -1,7 +1,10 @@
+import type { CSSProperties, ReactNode } from "react"
+
 export interface TextProps {
 	className?: string
-	children?: React.ReactNode
+	style?: CSSProperties
+	children?: ReactNode
 }
 export default function Text(props: Readonly<TextProps>) {
-	return <p className={props.className}>{props.children}</p>
+	return <p {...props} />
 }

@@ -1,12 +1,12 @@
 "use client"
-import type { ReactElement, ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
 import Button, { type ButtonProps } from "./button"
 import Label, { type LabelProps } from "./label"
-import { IconChevronDown, IconLoader2 } from "@tabler/icons-react"
 import { cn } from "./utils"
 import type { ViewProps } from "./globals"
-import React, { useEffect, useState } from "react"
 import { Skeleton } from "./skeleton"
+import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand } from "@tabler/icons-react"
+import { useMobile } from "./use-mobile"
 
 export interface SidebarProps extends ViewProps {
 	collasped?: boolean
@@ -31,7 +31,7 @@ export function SidebarFooter(props: SidebarFooterProps) {
 
 export interface SidebarMenuItemProps extends ViewProps {}
 export const SidebarMenuItem = (props: SidebarMenuItemProps) => {
-	return <li className={cn("flex flex-col", props.className)}>{props.children}</li>
+	return <li {...props} className={cn("flex flex-col", props.className)} />
 }
 
 export interface SidebarMenuButtonProps extends ButtonProps {
@@ -62,16 +62,16 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
 
 export interface SidebarGroupLabelProps extends Omit<LabelProps, "htmlFor"> {
 	expanded?: boolean
+	asChild?: boolean
 }
 export const SidebarGroupLabel = (props: SidebarGroupLabelProps) => {
 	return (
 		<Label
 			htmlFor=""
 			{...props}
-			className="justify-end gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate hover:text-foreground hover:cursor-pointer transition duration-250 ease [&>svg]:size-4.5 z-1"
+			className={cn("text-start gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate transition duration-250 ease [&>svg]:size-4.5 z-1", props.className)}
 		>
 			{props.children}
-			<IconChevronDown className={cn("shrink-0 ml-auto transition duration-250 ease", !props.expanded && "-rotate-90")} />
 		</Label>
 	)
 }
@@ -103,36 +103,70 @@ export interface SidebarGroupProps {
 	className?: string
 }
 export const SidebarGroup = (props: SidebarGroupProps) => {
-	const children = React.Children.toArray(props.children)
-	const first = children[0] as ReactElement<SidebarGroupLabelProps>
-	const last = children[1] as ReactElement<SidebarGroupContentProps>
+	return <div {...props} className={cn("flex flex-col", props.className)} />
+}
 
-	const [expanded, setExpanded] = useState(props.expanded)
-	const [mounted, setMounted] = useState(false)
+export interface SidebarContextProps {
+	open: boolean
+	setOpen(open: boolean): void
+	openMobile: boolean
+	setOpenMobile(open: boolean): void
+	isMobile: boolean
+	toggleSidebar(): void
+}
+export const SidebarContext = createContext<SidebarContextProps | null>(null)
 
-	const key = props.id ?? "group"
-	const label = React.cloneElement(first, {
-		expanded,
-		onPress: () => setExpanded(!expanded)
-	})
-	const content = React.cloneElement(last, {
-		expanded
-	})
+export function useSidebar() {
+	const context = useContext(SidebarContext)
+	if (!context) throw new Error("useSidebar must be used within a SidebarProvider.")
+	return context
+}
 
-	useEffect(() => {
-		setMounted(true)
-		const saved = localStorage.getItem(key)
-		if (saved) setExpanded(saved === "true")
-	}, [key])
+export interface SidebarProviderProps {
+	defaultOpen?: boolean
+	open?: boolean
+	onOpenChange?: (open: boolean) => void
+	children?: ReactNode
+}
+export function SidebarProvider(props: SidebarProviderProps) {
+	const [uncontrolledOpen, setUncontrolledOpen] = useState(props.defaultOpen ?? true)
+	const [uncontrolledMobileOpen, setUncontrolledMobileOpen] = useState(props.defaultOpen ?? false)
+	const { isMobile } = useMobile()
+	const open = props.open ?? uncontrolledOpen
+	const openMobile = props.open ?? uncontrolledMobileOpen
 
-	useEffect(() => {
-		if (mounted) localStorage.setItem(key, expanded ? "true" : "false")
-	}, [expanded, mounted, key])
+	const setOpen = useCallback(
+		(value: boolean) => {
+			if (!props.open) setUncontrolledOpen(value)
+			props.onOpenChange?.(value)
+		},
+		[props.open, props.onOpenChange]
+	)
+	const setOpenMobile = useCallback(
+		(value: boolean) => {
+			if (!props.open) setUncontrolledMobileOpen(value)
+			props.onOpenChange?.(value)
+		},
+		[props.open, props.onOpenChange]
+	)
+
+	const toggleSidebar = useCallback(() => {
+		if (!isMobile) {
+			setOpen(!open)
+		} else {
+			setOpenMobile(!openMobile)
+		}
+	}, [setOpen, setOpenMobile, open, openMobile, isMobile])
+
+	return <SidebarContext.Provider value={{ open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar }}>{props.children}</SidebarContext.Provider>
+}
+
+export function SidebarTrigger(props: ButtonProps) {
+	const { open, toggleSidebar } = useSidebar()
 
 	return (
-		<div className={cn("flex flex-col", props.className)}>
-			{label}
-			{content}
-		</div>
+		<Button variant="outline" size="icon-md" shape="rounded" onPress={toggleSidebar} {...props}>
+			{open ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
+		</Button>
 	)
 }

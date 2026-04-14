@@ -5,10 +5,10 @@ export type Size = "sm" | "md" | "lg" | "xl" | "icon" | "none"
 export type Shape = "square" | "rounded" | "pill"
 
 export interface ViewProps {
-	/** @android @ios @web */
+	/** @platform android, ios, web */
 	children?: ReactNode
-	/** @android @ios @web */
+	/** @platform android, ios, web */
 	style?: CSSProperties
-	/** @web */
+	/** @platform web */
 	className?: string
 }

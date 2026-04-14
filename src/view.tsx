@@ -1,6 +1,7 @@
-import { Fragment, type JSX, type ReactNode } from "react"
+import { Fragment, type JSX, type ReactComponentElement, type ReactNode } from "react"
 import type { ViewProps } from "./globals"
 import { cn } from "./utils"
+import Separator from "./separator"
 
 export function View(props: ViewProps) {
 	return <div {...props} />
@@ -25,6 +26,7 @@ export function ScrollView(props: ScrollViewProps) {
 
 export interface FlatListProps<ItemT> extends ViewProps {
 	data: ItemT[]
+	draggable?: boolean
 	renderItem(item: {
 		item: ItemT
 		index: number
@@ -33,29 +35,38 @@ export interface FlatListProps<ItemT> extends ViewProps {
 			unhighlight: () => void
 			updateProps: (select: "leading" | "trailing", newProps: unknown) => void
 		}
-	}): JSX.Element
+	}): JSX.Element | null
 	keyExtractor?: (item: ItemT, index: number) => string
-	ItemSeparatorComponent?: ReactNode
+	ItemSeparatorComponent?: JSX.Element | React.FC
+	ListFooterComponent?: JSX.Element | React.FC
 }
-export function FlatList<Item>(props: FlatListProps<Item>) {
+export function FlatList<Item>({ renderItem, keyExtractor, ItemSeparatorComponent, ListFooterComponent, ...props }: FlatListProps<Item>) {
+	const size = props.data.length - 1
+	const Separator = typeof ItemSeparatorComponent === "function" ? <ItemSeparatorComponent /> : ItemSeparatorComponent
+	const Footer = typeof ListFooterComponent === "function" ? <ListFooterComponent /> : ListFooterComponent
+
 	return (
 		<ul style={props.style} className={props.className}>
-			{props.data.map((item, index) => (
-				<Fragment key={props.keyExtractor ? props.keyExtractor(item, index) : index}>
-					<li>
-						{props.renderItem({
-							item,
-							index,
-							separators: {
-								highlight: () => {},
-								unhighlight: () => {},
-								updateProps: () => {}
-							}
-						})}
-					</li>
-					{props.ItemSeparatorComponent}
-				</Fragment>
-			))}
+			{props.data.map((item, index) => {
+				const comp = renderItem({
+					item,
+					index,
+					separators: {
+						highlight: () => {},
+						unhighlight: () => {},
+						updateProps: () => {}
+					}
+				})
+				if (comp) {
+					return (
+						<Fragment key={keyExtractor ? keyExtractor(item, index) : index}>
+							<li draggable={props.draggable}>{comp}</li>
+							{index !== size && Separator}
+						</Fragment>
+					)
+				}
+			})}
+			{Footer}
 		</ul>
 	)
 }

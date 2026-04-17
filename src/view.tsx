@@ -1,7 +1,6 @@
-import { Fragment, type JSX, type ReactComponentElement, type ReactNode } from "react"
+import { Fragment, type JSX } from "react"
 import type { ViewProps } from "./globals"
 import { cn } from "./utils"
-import Separator from "./separator"
 
 export function View(props: ViewProps) {
 	return <div {...props} />
@@ -12,7 +11,11 @@ export interface StackProps extends ViewProps {
 	spacing?: number
 }
 export function Stack(props: StackProps) {
-	return <div className={cn("flex flex-col", props.className)}>{props.children}</div>
+	return (
+		<div {...props} className={cn("flex flex-col", props.className)}>
+			{props.children}
+		</div>
+	)
 }
 
 export interface ScrollViewProps extends ViewProps {}
@@ -30,11 +33,13 @@ export interface FlatListProps<ItemT> extends ViewProps {
 	renderItem(item: {
 		item: ItemT
 		index: number
+		/*
 		separators: {
 			highlight: () => void
 			unhighlight: () => void
 			updateProps: (select: "leading" | "trailing", newProps: unknown) => void
 		}
+        */
 	}): JSX.Element | null
 	keyExtractor?: (item: ItemT, index: number) => string
 	ItemSeparatorComponent?: JSX.Element | React.FC
@@ -45,25 +50,20 @@ export function FlatList<Item>({ renderItem, keyExtractor, ItemSeparatorComponen
 	const Separator = typeof ItemSeparatorComponent === "function" ? <ItemSeparatorComponent /> : ItemSeparatorComponent
 	const Footer = typeof ListFooterComponent === "function" ? <ListFooterComponent /> : ListFooterComponent
 
+	let prev: JSX.Element | null = null
 	return (
 		<ul style={props.style} className={props.className}>
 			{props.data.map((item, index) => {
-				const comp = renderItem({
-					item,
-					index,
-					separators: {
-						highlight: () => {},
-						unhighlight: () => {},
-						updateProps: () => {}
-					}
-				})
+				const comp = renderItem({ item, index })
 				if (comp) {
-					return (
+					const result = (
 						<Fragment key={keyExtractor ? keyExtractor(item, index) : index}>
+							{prev && Separator}
 							<li draggable={props.draggable}>{comp}</li>
-							{index !== size && Separator}
 						</Fragment>
 					)
+					prev = comp
+					return result
 				}
 			})}
 			{Footer}

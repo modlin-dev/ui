@@ -10,14 +10,16 @@ export const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				primary: "bg-primary disabled:bg-primary/60 not-disabled:hover:bg-primary/85 not-disabled:active:bg-primary/80 text-background",
+				primary:
+					"bg-primary disabled:bg-primary/60 not-disabled:hover:bg-primary/85 not-disabled:active:bg-primary/80 not-disabled:focus-visible:bg-primary/80 text-background",
 				secondary: "bg-secondary not-disabled:hover:bg-secondary/75 focus-visible:inset-ring focus-visible:inset-ring-primary/50",
-				destructive: "bg-red/15 not-disabled:hover:bg-red/20 not-disabled:active:bg-red/25 text-red",
+				destructive: "bg-red/15 disabled:bg-red/10 not-disabled:hover:bg-red/20 not-disabled:active:bg-red/25 text-red",
 				outline: cn(
 					"inset-ring inset-ring-border",
 					"not-disabled:hover:bg-secondary active:bg-secondary active:inset-ring-muted-foreground focus-visible:inset-ring-muted-foreground disabled:bg-background disabled:text-muted-foreground"
 				),
-				ghost: "not-disabled:hover:bg-secondary disabled:text-muted-foreground focus-visible:inset-ring-muted-foreground",
+				ghost:
+					"not-disabled:hover:bg-secondary not-disabled:focus-visible:inset-ring disabled:text-muted-foreground not-disabled:focus-visible:inset-ring-border",
 				link: "text-primary/75 not-disabled:hover:underline not-disabled:hover:text-primary",
 				none: ""
 			},
@@ -142,6 +144,8 @@ export interface ButtonProps extends ViewProps, VariantProps<typeof buttonVarian
 	id?: string
 	/** @web */
 	type?: "button" | "reset" | "submit"
+	/** @platform web */
+	popoverTarget?: string
 	/** @android @ios @web */
 	onPress?(event: MouseEvent): void | Promise<void>
 	/** @android @ios @web */
@@ -210,6 +214,7 @@ export default function Button(props: ButtonProps) {
 			onBlur={props.onBlur}
 			style={props.style}
 			id={props.id}
+            popoverTarget={props.popoverTarget}
 			className={cn(className)}
 		>
 			{props.loading ? (

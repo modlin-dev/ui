@@ -74,7 +74,7 @@ export default function Checkbox(props: Readonly<CheckboxProps>): ReactElement<C
 				disabled={props.disabled}
 				className={cn(
 					"w-4 h-4 rounded-sm hover:cursor-pointer text-background",
-					"bg-background inset-ring inset-ring-muted-foreground peer-checked:bg-primary peer-checked:inset-ring-0 disabled:inset-ring-border peer-checked:disabled:bg-primary/50"
+					"bg-background inset-ring inset-ring-muted-foreground peer-checked:bg-primary peer-checked:inset-ring-0 focus:inset-ring-foreground disabled:inset-ring-border peer-checked:disabled:bg-primary/50"
 					// "data-[state=unchecked]:inset-ring",
 					// "data-[state=unchecked]:bg-background data-[state=unchecked]:inset-ring-muted-foreground",
 					// "data-[state=unchecked]:disabled:inset-ring-border",

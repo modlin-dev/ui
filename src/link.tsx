@@ -16,10 +16,10 @@ export default function Link(props: LinkProps) {
 	if (props.copyable || props.copy) {
 		return (
 			<span className="group">
-				<ExternalLink {...props} className={cn("transition duration-250 ease hover:underline text-primary/75 hover:text-primary", props.className)}>
+				<ExternalLink {...props} className={cn("transition duration-250 ease hover:underline text-primary/75 hover:text-primary align-text-bottom", props.className)}>
 					{props.children}
 				</ExternalLink>
-				<span className="size-5 ml-1.5 transition duration-250 ease opacity-0 text-muted-foreground group-hover:opacity-100 hover:opacity-100 hover:text-foreground">
+				<span className="inline-flex items-center justify-center size-5 ml-1.5 transition duration-250 ease opacity-0 bg-muted text-muted-foreground rounded-sm group-hover:opacity-100 hover:opacity-100 hover:text-foreground">
 					{copied ? (
 						<IconCopyCheck
 							size={16}
@@ -31,7 +31,7 @@ export default function Link(props: LinkProps) {
 									setCopied(false)
 								}
 							}}
-							className="absolute inline m-0.5 transition duration-250 ease hover:cursor-pointer hover:text-foreground"
+							className="transition duration-250 ease hover:cursor-pointer hover:text-foreground"
 						/>
 					) : (
 						<IconCopy
@@ -44,7 +44,7 @@ export default function Link(props: LinkProps) {
 									setCopied(false)
 								}
 							}}
-							className="absolute inline m-0.5 transition duration-250 ease hover:cursor-pointer hover:text-foreground"
+							className="transition duration-250 ease hover:cursor-pointer hover:text-foreground"
 						/>
 					)}
 				</span>

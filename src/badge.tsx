@@ -8,22 +8,26 @@ const variant = {
 	outline: "inset-ring inset-ring-border",
 }
 const size = {
+	xs: "h-4 px-1.5 text-xs [&>svg]:size-2",
 	sm: "h-5 px-2 text-xs [&>svg]:size-3",
 	md: "h-5 px-2 text-xs [&>svg]:size-3",
 	lg: "h-8 px-4 text-sm [&>svg]:size-4",
 }
 const shape = {
 	square: {
+		xs: "rounded-none",
 		sm: "rounded-none",
 		md: "rounded-none",
 		lg: "rounded-none",
 	},
 	rounded: {
+		xs: "rounded-xs px-1",
 		sm: "rounded-sm px-1",
 		md: "rounded-md px-1.5",
 		lg: "rounded-lg px-3",
 	},
 	pill: {
+		xs: "rounded-full",
 		sm: "rounded-full",
 		md: "rounded-full",
 		lg: "rounded-full",

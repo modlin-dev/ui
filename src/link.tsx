@@ -2,7 +2,7 @@
 import ExternalLink, { type LinkProps as ExternalLinkProps } from "next/link"
 import { useState, type ReactNode } from "react"
 import { cn } from "./utils"
-import { IconCopy, IconCopyCheck } from "@tabler/icons-react"
+import { IconCopy, IconCheck } from "@tabler/icons-react"
 
 export interface LinkProps extends ExternalLinkProps {
 	copy?: string
@@ -21,7 +21,7 @@ export default function Link(props: LinkProps) {
 				</ExternalLink>
 				<span className="inline-flex items-center justify-center size-5 ml-1.5 transition duration-250 ease opacity-0 bg-muted text-muted-foreground rounded-sm group-hover:opacity-100 hover:opacity-100 hover:text-foreground">
 					{copied ? (
-						<IconCopyCheck
+						<IconCheck
 							size={16}
 							onClick={async () => {
 								try {

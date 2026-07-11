@@ -13,11 +13,12 @@
     --primary: rgba(0, 0, 0);
     --secondary: rgba(0, 0, 0, 0.05);
 
-    --red: hsl(349, 88%, 53%);
-    --yellow: oklch(79.5% 0.184 86.047);
-    --green: oklch(69.6% 0.17 162.48);
-    --cyan: hsl(190, 100%, 70%);
+    --red: rgb(208, 22, 58);
+    --yellow: rgb(253, 220, 1);
+    --green: rgb(0, 139, 112);
+    --cyan: rgb(0, 155, 223);
     --blue: #4c52f4;
+    --magenta: rgb(216, 62, 127);
     --purple: #7962f0;
 
     --shadow: rgba(0, 0, 0, 0.1);
@@ -42,16 +43,74 @@
         --primary: hsl(0, 0%, 100%);
         --secondary: hsla(0, 0%, 100%, 0.12);
 
-        --red: rgb(253, 99, 102);
-        --yellow: oklch(90.5% 0.182 98.111);
-        --green: #33c995;
-        --cyan: hsl(190, 100%, 70%);
+        --red: rgb(217, 78, 98);
+        --yellow: rgb(255, 232, 0);
+        --green: rgb(0, 167, 131);
+        --cyan: rgb(31, 180, 230);
         --blue: #7075f6;
-        --purple: #8366f4;
+        --magenta: rgb(218, 77, 143);
+        --purple: #8366f4; /* final */
 
         --shadow: hsla(0, 0%, 100%, 0.25);
         --shadow-2xl: hsla(0, 0%, 100%, 0.25);
     }
+}
+
+
+.light {
+    --background: hsl(0 0% 100%);
+    --foreground: hsl(0 0% 0%);
+    --muted: hsl(0 0% 90%);
+    --muted-foreground: hsla(0, 0%, 50%);
+    --border: rgba(0, 0, 0, 0.1);
+
+    --outline: oklch(90% 0 0);
+    --priority: rgb(64, 64, 64);
+    --description: #7f7f7f;
+    --disabled: #bfbfbf;
+
+    --primary: rgba(0, 0, 0);
+    --secondary: rgba(0, 0, 0, 0.05);
+
+    --red: rgb(208, 22, 58);
+    --yellow: rgb(253, 220, 1);
+    --green: rgb(0, 139, 112);
+    --cyan: rgb(0, 155, 223);
+    --blue: #4c52f4;
+    --magenta: rgb(216, 62, 127);
+    --purple: #7962f0;
+
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-2xl: rgba(0, 0, 0, 0.1);
+
+    --bounce: cubic-bezier(0.34, 1.56, 0.64, 1.00);
+}
+.dark {
+    --background: hsl(0, 0%, 0%);
+    --foreground: hsl(0, 0%, 100%);
+    --muted: hsla(0, 0%, 100%, 0.1);
+    --muted-foreground: hsl(0, 0%, 40%);
+    /* --muted-foreground: hsla(0, 0%, 100%, 0.4); */
+    --border: hsla(0, 0%, 100%, 0.15);
+
+    --outline: oklch(30% 0 0);
+    --priority: rgb(191, 191, 191);
+    --description: rgba(255, 255, 255, 0.5);
+    --disabled: rgba(255, 255, 255, 0.25);
+
+    --primary: hsl(0, 0%, 100%);
+    --secondary: hsla(0, 0%, 100%, 0.12);
+
+    --red: rgb(217, 78, 98);
+    --yellow: rgb(255, 232, 0);
+    --green: rgb(0, 167, 131);
+    --cyan: rgb(31, 180, 230);
+    --blue: #7075f6;
+    --magenta: rgb(218, 77, 143);
+    --purple: #8366f4; /* final */
+
+    --shadow: hsla(0, 0%, 100%, 0.25);
+    --shadow-2xl: hsla(0, 0%, 100%, 0.25);
 }
 
 * {

@@ -46,7 +46,6 @@ export interface FlatListProps<ItemT> extends ViewProps {
 	ListFooterComponent?: JSX.Element | React.FC
 }
 export function FlatList<Item>({ renderItem, keyExtractor, ItemSeparatorComponent, ListFooterComponent, ...props }: FlatListProps<Item>) {
-	const size = props.data.length - 1
 	const Separator = typeof ItemSeparatorComponent === "function" ? <ItemSeparatorComponent /> : ItemSeparatorComponent
 	const Footer = typeof ListFooterComponent === "function" ? <ListFooterComponent /> : ListFooterComponent
 

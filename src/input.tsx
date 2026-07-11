@@ -35,7 +35,12 @@ export const textInputVariants = cva("peer flex items-center w-full transition d
 			lg: "gap-2.75 h-11 px-3.5 rounded-xl",
 			xl: "gap-3 h-12 px-4 rounded-2xl",
 			none: ""
-		}
+		},
+        shape: {
+            square: "",
+            rounded: "",
+            pill: "rounded-full"
+        }
 	},
 	defaultVariants: {
 		variant: "primary",

@@ -1,3 +1,4 @@
+import { IconChevronDown } from "@tabler/icons-react"
 import type { ViewProps } from "./globals"
 import { cn } from "./utils"
 
@@ -15,12 +16,17 @@ export interface AccordionItemProps extends ViewProps {
 	value?: string
 }
 export function AccordionItem(props: AccordionItemProps) {
-	return <details className={cn("flex flex-col border-t border-border", props.className)}>{props.children}</details>
+	return <details className={cn("flex flex-col border-t border-border group peer", props.className)}>{props.children}</details>
 }
 
 export interface AccordionTriggerProps extends ViewProps {}
 export function AccordionTrigger(props: AccordionTriggerProps) {
-	return <summary className={cn("text-primary/75 select-none flex h-16 items-center", props.className)}>{props.children}</summary>
+	return (
+		<summary className={cn("text-primary/75 select-none flex h-16 items-center justify-between transition duration-250 ease hover:text-foreground hover:underline", props.className)}>
+			<span>{props.children}</span>
+            <IconChevronDown size={16} className="transition duration-250 ease group-open:rotate-180" />
+		</summary>
+	)
 }
 
 export interface AccordionContentProps extends ViewProps {}

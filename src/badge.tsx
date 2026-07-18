@@ -11,7 +11,7 @@ const size = {
 	xs: "h-4 px-1.5 text-xs [&>svg]:size-2",
 	sm: "h-5 px-2 text-xs [&>svg]:size-3",
 	md: "h-5 px-2 text-xs [&>svg]:size-3",
-	lg: "h-8 px-4 text-sm [&>svg]:size-4",
+	lg: "gap-1.25 h-8 px-4 text-sm [&>svg]:size-3",
 }
 const shape = {
 	square: {
@@ -24,7 +24,7 @@ const shape = {
 		xs: "rounded-xs px-1",
 		sm: "rounded-sm px-1",
 		md: "rounded-md px-1.5",
-		lg: "rounded-lg px-3",
+		lg: "rounded-lg px-2.5",
 	},
 	pill: {
 		xs: "rounded-full",

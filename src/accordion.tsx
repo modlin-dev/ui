@@ -16,7 +16,7 @@ export interface AccordionItemProps extends ViewProps {
 	value?: string
 }
 export function AccordionItem(props: AccordionItemProps) {
-	return <details className={cn("flex flex-col pt-4 mb-4 border-t border-border group peer", props.className)}>{props.children}</details>
+	return <details className={cn("flex flex-col pt-4 mb-4 not-first:border-t border-border group peer", props.className)}>{props.children}</details>
 }
 
 export interface AccordionTriggerProps extends ViewProps {}

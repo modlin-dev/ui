@@ -69,7 +69,7 @@ export const SidebarGroupLabel = (props: SidebarGroupLabelProps) => {
 		<Label
 			htmlFor=""
 			{...props}
-			className={cn("text-start gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate transition duration-250 ease [&>svg]:size-4.5 z-1", props.className)}
+			className={cn("text-start gap-2.25 w-full h-9 p-2.25 text-muted-foreground truncate transition duration-250 ease [&>svg]:size-4.5", props.className)}
 		>
 			{props.children}
 		</Label>

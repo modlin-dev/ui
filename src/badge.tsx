@@ -10,7 +10,7 @@ const variant = {
 const size = {
 	xs: "h-4 px-1.5 text-xs [&>svg]:size-2",
 	sm: "h-5 px-2 text-xs [&>svg]:size-3",
-	md: "h-5 px-2 text-xs [&>svg]:size-3",
+	md: "h-6 px-2 text-xs [&>svg]:size-3 font-medium",
 	lg: "gap-1.25 h-8 px-4 text-sm [&>svg]:size-3",
 }
 const shape = {
@@ -38,7 +38,7 @@ export interface BadgeProps {
 	variant?: keyof typeof variant
 	size?: keyof typeof size
 	shape?: keyof typeof shape
-	children: ReactNode | number
+	children?: ReactNode | number
 	className?: string
 }
 export default function Badge(props: Readonly<BadgeProps>) {

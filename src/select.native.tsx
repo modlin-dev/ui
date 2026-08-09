@@ -12,7 +12,7 @@ const selectVariants = cva("flex items-center transition duration-150 ease-in", 
 			none: ""
 		},
 		size: {
-			sm: "gap-2.5 h-8 px-2.5 text-sm rounded-lg",
+			sm: "gap-2.5 h-8 pl-3 pr-[9px] text-sm rounded-lg",
 			md: "gap-3 h-9 px-3 rounded-[9px] text-sm",
 			lg: "gap-3 h-11 px-3 rounded-[14px]",
 			xl: "gap-4 h-12 px-4 rounded-2xl",

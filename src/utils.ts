@@ -1,9 +1,8 @@
-import clsx, { type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+// import { clsx, type ClassValue } from "clsx"
+// import { twMerge } from "tailwind-merge"
+// export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
 
-export function cn(...classList: ClassValue[]) {
-	return twMerge(clsx(...classList))
-}
+export { cn } from "cnfast"
 
 export function mergeProps(childProps = {}, parentProps: Record<string, unknown> = {}) {
 	const result: Record<string, unknown> = { ...childProps }

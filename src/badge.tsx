@@ -22,7 +22,7 @@ const shape = {
 	},
 	rounded: {
 		xs: "rounded-xs px-1",
-		sm: "rounded-sm px-1",
+		sm: "rounded-[5px] px-1.25",
 		md: "rounded-md px-1.5",
 		lg: "rounded-lg px-2.5",
 	},

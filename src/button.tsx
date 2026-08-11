@@ -58,7 +58,7 @@ export const buttonVariants = cva(
 			{
 				shape: "rounded",
 				size: "lg",
-				class: "rounded-[14px] px-3"
+				class: "rounded-[12px] px-4"
 			},
 			{
 				shape: "rounded",

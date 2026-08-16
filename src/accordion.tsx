@@ -13,23 +13,30 @@ export function Accordion(props: AccordionProps) {
 }
 
 export interface AccordionItemProps extends ViewProps {
+    id?: string
+    open?: boolean
 	value?: string
 }
 export function AccordionItem(props: AccordionItemProps) {
-	return <details className={cn("flex flex-col pt-4 mb-4 not-first:border-t border-border group peer", props.className)}>{props.children}</details>
+	return <details id={props.id} open={props.open} className={cn("flex flex-col open:mb-4 not-first:border-t border-border group peer", props.className)}>{props.children}</details>
 }
 
 export interface AccordionTriggerProps extends ViewProps {}
 export function AccordionTrigger(props: AccordionTriggerProps) {
 	return (
-		<summary className={cn("text-primary/75 select-none flex items-center justify-between transition duration-250 ease hover:text-foreground hover:underline", props.className)}>
+		<summary
+			className={cn(
+				"text-primary/75 select-none flex items-center justify-between py-4 transition duration-250 hover:text-foreground hover:underline",
+				props.className
+			)}
+		>
 			<span>{props.children}</span>
-            <IconChevronDown size={16} className="transition duration-250 ease group-open:rotate-180" />
+			<IconChevronDown size={16} className="transition duration-250 ease group-open:rotate-180" />
 		</summary>
 	)
 }
 
 export interface AccordionContentProps extends ViewProps {}
 export function AccordionContent(props: AccordionContentProps) {
-	return <p className={cn("mt-2 text-muted-foreground", props.className)}>{props.children}</p>
+	return <p className={cn("-mt-2 text-muted-foreground", props.className)}>{props.children}</p>
 }

@@ -30,22 +30,66 @@ export const textInputVariants = cva("peer flex items-center w-full transition d
 			none: ""
 		},
 		size: {
-			sm: "gap-2 h-8 px-3 rounded-lg text-sm",
-			md: "gap-2.25 h-9 px-3 rounded-[9px] text-sm",
-			lg: "gap-2.75 h-11 px-3.5 rounded-xl",
-			xl: "gap-3 h-12 px-4 rounded-2xl",
+			sm: "gap-2 h-8 px-3 text-sm",
+			md: "gap-2.25 h-9 px-3 text-sm",
+			lg: "gap-2.75 h-11 px-5",
+			xl: "gap-3 h-12 px-6",
 			none: ""
 		},
-        shape: {
-            square: "",
-            rounded: "",
-            pill: "rounded-full"
-        }
+		shape: {
+			square: "",
+			rounded: "",
+			pill: "rounded-full"
+		}
 	},
 	defaultVariants: {
 		variant: "primary",
-		size: "xl"
-	}
+		size: "xl",
+		shape: "rounded"
+	},
+	compoundVariants: [
+		{
+			shape: "rounded",
+			size: "sm",
+			class: "rounded-lg px-3"
+		},
+		{
+			shape: "rounded",
+			size: "md",
+			class: "rounded-[9px] px-3"
+		},
+		{
+			shape: "rounded",
+			size: "lg",
+			class: "rounded-[12px] px-4"
+		},
+		{
+			shape: "rounded",
+			size: "xl",
+			class: "rounded-2xl px-4"
+		},
+
+		{
+			shape: "square",
+			size: "sm",
+			class: "px-3"
+		},
+		{
+			shape: "square",
+			size: "md",
+			class: "px-3"
+		},
+		{
+			shape: "square",
+			size: "lg",
+			class: "px-4"
+		},
+		{
+			shape: "square",
+			size: "xl",
+			class: "px-4"
+		}
+	]
 })
 
 type InputType = "text" | "password" | "email" | "number" | "tel" | "url" | "file"
@@ -141,6 +185,7 @@ export function TextInput(props: TextInputProps) {
 				textInputVariants({
 					variant: props.variant,
 					size: props.size,
+                    shape: props.shape,
 					className: props.className
 				})
 			)}
@@ -162,6 +207,7 @@ export function InputGroup(props: InputGroupProps) {
 				textInputVariants({
 					variant: props.variant,
 					size: props.size,
+                    shape: props.shape,
 					className: props.className
 				})
 			)}

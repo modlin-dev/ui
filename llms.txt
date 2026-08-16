@@ -1,0 +1,1652 @@
+# @modlin/ui — AI Coding Agent Reference
+
+> Lightweight React UI library built on the Motive design system for consistent, fast, and elegant interfaces.
+> This document is the authoritative public-API reference for AI agents writing code against `@modlin/ui`. It covers every exported React component: exact import path, TypeScript props interface, usage examples, and technical constraints. Internal implementation details are intentionally omitted.
+
+---
+
+## 1. Quick Start
+
+### Installation
+
+```bash
+npm install @modlin/ui
+# or
+bun add @modlin/ui
+```
+
+Peer dependencies: `next` (^16.2.0), `react` (latest), `react-dom` (latest).
+
+### Global CSS (required)
+
+Import the design tokens once in your app's global stylesheet. The tokens expose the theme colors used by every component (`bg-primary`, `text-foreground`, `inset-ring-border`, etc.) and are theme-aware via `prefers-color-scheme` plus `.light` / `.dark` classes.
+
+```css
+/* app/globals.css */
+@import "@modlin/ui/globals.css";
+
+@import "tailwindcss";
+```
+
+Design tokens provided (Tailwind v4 `@theme` mappings): `background`, `foreground`, `muted`, `muted-foreground`, `border`, `outline`, `priority`, `description`, `disabled`, `primary`, `secondary`, `red`, `yellow`, `green`, `cyan`, `blue`, `magenta`, `purple`, `shadow`, plus `animate-appear`.
+
+### Import pattern — IMPORTANT
+
+There is **no package entry point** (`src/index.ts` does not exist). Every component must be imported via a **subpath export** matching its file name:
+
+```tsx
+import Button from "@modlin/ui/button"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@modlin/ui/accordion"
+import { cn } from "@modlin/ui/utils"
+```
+
+Rules:
+- `@modlin/ui/*` resolves to `src/*.tsx` via the `exports` map. Only the `.tsx` files listed below are importable.
+- `@modlin/ui/globals.css` is the only non-component export (CSS tokens).
+- Types live alongside components; import them from the same subpath as the component (e.g. `import type { ButtonProps } from "@modlin/ui/button"`).
+- Components may be **default exports**, **named exports**, or both — see each section.
+
+### Server Component vs Client Component
+
+- Components marked **"use client"** below bundle React hooks (`useState`, `useEffect`, `useRef`, context) and **must be rendered from a Client Component**. Importing them into a Server Component file causes a Next.js build error.
+- Components **without** the directive are server-safe (pure presentational). However, any event-handler props (`onPress`, `onChange`, …) only take effect when the component is used inside a Client Component; event handlers cannot be passed from a Server Component.
+- If you need interactivity, add `"use client"` to the file that uses the component (or a wrapper component).
+
+### Shared base types (`src/globals.ts`)
+
+Used by most component prop interfaces:
+
+```ts
+export type Variant = "primary" | "secondary" | "destructive" | "outline" | "ghost" | "link" | "none"
+export type Size = "sm" | "md" | "lg" | "xl" | "icon" | "none"
+export type Shape = "square" | "rounded" | "pill"
+
+export interface ViewProps {
+  /** @platform android, ios, web */
+  children?: ReactNode
+  /** @platform android, ios, web */
+  style?: CSSProperties
+  /** @platform web */
+  className?: string
+}
+```
+
+### Utilities (`src/utils.ts`)
+
+```ts
+import { cn, mergeProps } from "@modlin/ui/utils"
+
+cn(...inputs)                                  // clsx + tailwind-merge (re-exported from "cnfast")
+mergeProps(childProps, parentProps)            // shallow-merge; parent wins unless value is undefined
+```
+
+---
+
+## 2. Layout & Structure
+
+### `Card` — Layout container
+
+- **Import:** `import Card, { CardHeader, CardContent, CardFooter, CardAction } from "@modlin/ui/card"` (named + default)
+- **Constraints:** Server-safe. Renders `<article>` (Card), `<header>`, `<div>`, `<footer>`. No hooks, no directives.
+
+**Props**
+
+```ts
+export interface CardProps extends ViewProps {
+  size?: "md" | "lg" | "xl"   // default "md"; md = p-4 rounded-2xl, lg = p-6, xl = p-8 rounded-4xl
+}
+// CardHeader, CardContent, CardFooter, CardAction all extend ViewProps (empty additions)
+```
+
+**Example**
+
+```tsx
+// app/page.tsx  (Server Component)
+import Card, { CardHeader, CardContent, CardFooter } from "@modlin/ui/card"
+import Button from "@modlin/ui/button"
+import { Heading2 } from "@modlin/ui/heading"
+
+export default function Page() {
+  return (
+    <Card size="lg" className="max-w-md">
+      <CardHeader>
+        <Heading2 className="text-start">Account settings</Heading2>
+      </CardHeader>
+      <CardContent className="flex-col gap-4">
+        <p className="text-sm text-muted-foreground">Manage your profile details.</p>
+      </CardContent>
+      <CardFooter>
+        <Button variant="primary" size="md" shape="rounded">Save changes</Button>
+      </CardFooter>
+    </Card>
+  )
+}
+```
+
+---
+
+### `Stack` / `VStack` / `HStack` — Flexbox layout primitives
+
+- **Import:** `import Stack, { VStack, HStack } from "@modlin/ui/stack"`
+- **Constraints:** Server-safe. `Stack` renders a flex column (`flex flex-col`); `HStack` renders `flex` (row). Sizes are applied via inline `style`, not Tailwind classes.
+
+**Props**
+
+```ts
+interface StackProps {
+  align?: "start" | "center" | "end"      // alignItems (inline style)
+  justify?: "start" | "center" | "end"    // justifyContent (inline style)
+  gap?: number                            // gap in px (inline style)
+  direction?: "uphold" | "reverse"        // NOTE: accepted but NOT applied in the implementation
+  children: React.ReactNode
+  className?: string
+  style?: CSSProperties
+}
+```
+
+**Example**
+
+```tsx
+// app/page.tsx (Server Component)
+import { VStack, HStack } from "@modlin/ui/stack"
+import Text from "@modlin/ui/text"
+
+export default function Page() {
+  return (
+    <VStack gap={16} align="center">
+      <Text>Name</Text>
+      <HStack justify="center" gap={8}>
+        <Text>React</Text>
+        <Text>Next.js</Text>
+      </HStack>
+    </VStack>
+  )
+}
+```
+
+---
+
+### `View` / `ScrollView` / `FlatList` / `Stack` — Low-level layout
+
+- **Import:** `import View, { ScrollView, FlatList, Stack } from "@modlin/ui/view"` (default `View`)
+- **Constraints:** Server-safe. React-Native-inspired aliases over plain HTML. Note the `Stack` in this file is distinct from `@modlin/ui/stack`. Renders `<div>` / `<ul>` / `<li>`.
+
+**Props**
+
+```ts
+export interface ViewProps {
+  children?: ReactNode
+  style?: CSSProperties
+  className?: string
+}
+
+export interface StackProps extends ViewProps {
+  alignment?: "leading" | "trailing"   // NOTE: declared but not applied
+  spacing?: number                     // NOTE: declared but not applied
+}
+
+export interface ScrollViewProps extends ViewProps {}   // renders overflow-y-auto flex-col div
+
+export interface FlatListProps<ItemT> extends ViewProps {
+  data: ItemT[]
+  draggable?: boolean
+  renderItem(item: { item: ItemT; index: number }): JSX.Element | null
+  keyExtractor?: (item: ItemT, index: number) => string
+  ItemSeparatorComponent?: JSX.Element | React.FC
+  ListFooterComponent?: JSX.Element | React.FC
+}
+```
+
+**Example**
+
+```tsx
+// app/page.tsx (Server Component)
+import { FlatList } from "@modlin/ui/view"
+
+type Row = { id: string; title: string }
+
+export default function Page() {
+  const rows: Row[] = [
+    { id: "1", title: "First" },
+    { id: "2", title: "Second" },
+  ]
+  return (
+    <FlatList<Row>
+      data={rows}
+      keyExtractor={r => r.id}
+      renderItem={({ item }) => <p>{item.title}</p>}
+    />
+  )
+}
+```
+
+---
+
+### `Content` — Generic content wrapper
+
+- **Import:** `import Content from "@modlin/ui/content"`
+- **Constraints:** Server-safe. Renders `<div className="flex">`.
+
+**Props**
+
+```ts
+export interface ContentProps {
+  children: React.ReactNode   // required
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import Content from "@modlin/ui/content"
+
+<Content className="max-w-prose flex-col gap-4">
+  <p>Body content</p>
+</Content>
+```
+
+---
+
+### `Footer` — Generic footer wrapper
+
+- **Import:** `import Footer from "@modlin/ui/footer"`
+- **Constraints:** Server-safe. Renders `<div className="flex">`.
+
+**Props**
+
+```ts
+export interface FooterProps {
+  children: React.ReactNode   // required
+  className?: string
+}
+```
+
+---
+
+### `Header` — Section header composed of a Heading + Text
+
+- **Import:** `import Header from "@modlin/ui/header"`
+- **Constraints:** Server-safe. `children` must be exactly a two-element tuple: `[Heading, Text]` (enforced by the prop type).
+
+**Props**
+
+```ts
+export interface HeaderProps {
+  gap?: number                                    // default 8 (px)
+  children: [ReactElement<HeadingProps>, ReactElement<TextProps>]  // required tuple
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import Header from "@modlin/ui/header"
+import { Heading2 } from "@modlin/ui/heading"
+import Text from "@modlin/ui/text"
+
+<Header gap={12}>
+  <Heading2>Documentation</Heading2>
+  <Text className="text-muted-foreground">Guides for using the library.</Text>
+</Header>
+```
+
+---
+
+### `Separator` — Horizontal/vertical rule
+
+- **Import:** `import Separator from "@modlin/ui/separator"`
+- **Constraints:** Server-safe. Renders `<hr>`. Preferred over the deprecated `Divider`.
+
+**Props**
+
+```ts
+export interface SeparatorProps {
+  className?: string
+  orientation?: "vertical" | "horizontal"   // default "horizontal"
+}
+```
+
+**Example**
+
+```tsx
+import Separator from "@modlin/ui/separator"
+
+<div className="flex h-10 items-center gap-4">
+  <span>Left</span>
+  <Separator orientation="vertical" />
+  <span>Right</span>
+</div>
+```
+
+---
+
+### `Divider` — ⚠️ Deprecated
+
+- **Import:** `import Divider from "@modlin/ui/divider"`
+- **Constraints:** **Deprecated** (JSDoc `@deprecated`). Renders `<div>` with `data-orientation`. Use `Separator` instead.
+
+**Props**
+
+```ts
+export interface DividerProps {
+  className?: string
+  orientation?: "vertical" | "horizontal"
+}
+```
+
+---
+
+## 3. Typography
+
+### `Heading` / `Heading1`…`Heading6`
+
+- **Import:** `import Heading, { Heading1, Heading2, Heading3, Heading4, Heading5, Heading6 } from "@modlin/ui/heading"`
+- **Constraints:** Server-safe. Default export `Heading` is an alias of `Heading1` (renders `<h1>`). All render semantic heading tags with shadcn-style styling; the `first` prop is consumed by the `first:` variants internally via the class string.
+
+**Props**
+
+```ts
+export interface HeadingProps {
+  first?: boolean
+  children?: React.ReactNode
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import { Heading1, Heading2, Heading3 } from "@modlin/ui/heading"
+
+<>
+  <Heading1>Page title</Heading1>
+  <Heading2>Section</Heading2>
+  <Heading3>Sub-section</Heading3>
+</>
+```
+
+---
+
+### `Text`
+
+- **Import:** `import Text from "@modlin/ui/text"`
+- **Constraints:** Server-safe. Renders `<p>`.
+
+**Props**
+
+```ts
+export interface TextProps {
+  className?: string
+  style?: CSSProperties
+  children?: ReactNode
+}
+```
+
+---
+
+### Typography presets (`src/typography.tsx`)
+
+- **Import:** `import { InlineCode, Lead, Large, Small, Muted, Caption } from "@modlin/ui/typography"`
+- **Constraints:** Server-safe. All components are `forwardRef`-enabled and accept `children` + `className` only.
+
+**Props**
+
+```ts
+export interface TypographyProps {
+  children?: ReactNode
+  className?: string
+}
+```
+
+| Component | Renders | Default styling |
+|---|---|---|
+| `InlineCode` | `<code>` | `bg-muted` mono, `rounded` |
+| `Lead` | `<p>` | `text-xl text-muted-foreground` |
+| `Large` | `<div>` | `text-lg font-semibold` |
+| `Small` | `<small>` | `text-sm leading-none font-medium` |
+| `Muted` | `<p>` | `text-sm text-muted-foreground` |
+| `Caption` | `<p>` | `text-xs text-muted-foreground select-none` |
+
+**Example**
+
+```tsx
+import { InlineCode, Lead, Muted, Small, Caption, Large } from "@modlin/ui/typography"
+
+<>
+  <Lead>Introduction to the design system.</Lead>
+  <Muted>Secondary explanation text.</Muted>
+  <Small>Legal fine print.</Small>
+  <Caption>Photo caption.</Caption>
+  <Large>Highlighted value</Large>
+  <p>Run <InlineCode>npm install</InlineCode> to begin.</p>
+</>
+```
+
+---
+
+### `Kbd` / `KbdGroup`
+
+- **Import:** `import Kbd, { KbdGroup } from "@modlin/ui/kbd"` (default `Kbd`)
+- **Constraints:** Server-safe. Renders `<kbd>` (uses `font-icons` class — the icon font glyph is the character placed inside).
+
+**Props**
+
+```ts
+// Kbd and KbdGroup both accept ViewProps
+export interface ViewProps {
+  children?: ReactNode
+  style?: CSSProperties
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import Kbd, { KbdGroup } from "@modlin/ui/kbd"
+
+<KbdGroup>
+  <Kbd>⌘</Kbd>
+  <Kbd>K</Kbd>
+</KbdGroup>
+```
+
+---
+
+## 4. Forms & Inputs
+
+### `TextInput` — Text/email/number/etc. input
+
+- **Import:** `import TextInput, { Prompt, InputGroup, textInputVariants } from "@modlin/ui/input"` (default + named)
+- **Constraints:** Server-safe. Renders `<input>`. `onChangeText` and `onChange` are mutually exclusive — when `onChangeText` is provided it wins and passes the raw string; otherwise `onChange` receives the full `ChangeEvent`. Styling variants are built with `cva` and exported as `textInputVariants`.
+
+**Props**
+
+```ts
+export interface TextInputProps extends VariantProps<typeof textInputVariants> {
+  // cva variants — default variant "primary", size "xl"
+  variant?: "primary" | "secondary" | "destructive" | "none"
+  size?: "sm" | "md" | "lg" | "xl" | "none"
+  shape?: "square" | "rounded" | "pill"
+
+  placeholder?: string
+  defaultValue?: string
+  value?: string
+  inputMode?: "search" | "text" | "email" | "tel" | "url" | "none" | "numeric" | "decimal"
+  autoCapitalize?: "none" | "sentences" | "words" | "characters"
+  autoComplete?: HTMLInputAutoCompleteAttribute
+  autoCorrect?: boolean              // true → "on", else "off"
+  autoFocus?: boolean
+  readOnly?: boolean
+  maxLength?: number
+  id?: string
+  type?: "text" | "password" | "email" | "number" | "tel" | "url" | "file"  // default "text"
+  name?: string
+  required?: boolean
+  disabled?: boolean
+  pattern?: string
+  min?: number | string
+  max?: number | string
+  minLength?: number
+  invalid?: boolean                  // sets data-invalid → red ring styling
+  describedby?: string              // aria-describedby
+  className?: string
+
+  onChange?(event: ChangeEvent<HTMLInputElement>): void
+  onChangeText?(text: string): void
+  onFocus?(event: FocusEvent<HTMLInputElement>): void
+  onBlur?(event: FocusEvent<HTMLInputElement>): void
+  onInvalid?(event: InvalidEvent<HTMLInputElement>): void
+}
+```
+
+**Example**
+
+```tsx
+// app/components/email-form.tsx ("use client")
+import TextInput from "@modlin/ui/input"
+import Label from "@modlin/ui/label"
+import Button from "@modlin/ui/button"
+import { useState } from "react"
+
+export default function EmailForm() {
+  const [email, setEmail] = useState("")
+  return (
+    <form className="flex flex-col gap-4">
+      <Label htmlFor="email">Email</Label>
+      <TextInput
+        id="email"
+        type="email"
+        size="md"
+        placeholder="you@example.com"
+        value={email}
+        onChangeText={setEmail}
+        required
+      />
+      <Button type="submit" size="md" shape="rounded">Subscribe</Button>
+    </form>
+  )
+}
+```
+
+**Related exports in `@modlin/ui/input`**
+
+- `Prompt(props)` — a `TextInput` with `variant="none" size="none"` (unstyled, for building custom inputs).
+- `InputGroup(props: InputGroupProps)` — a `<span>` carrying the same variant styling, for prefix/suffix content around an input (e.g. icons, currency symbols). `InputGroupProps extends TextInputProps { children?: ReactNode }`.
+- ⚠️ There is a separate empty file `src/input-group.tsx` with **no exports** — do not import from `@modlin/ui/input-group`; use `InputGroup` from `@modlin/ui/input`.
+- `textInputVariants` — the underlying `cva` recipe.
+
+---
+
+### `Textarea`
+
+- **Import:** `import Textarea from "@modlin/ui/textarea"`
+- **Constraints:** Server-safe. Renders `<textarea>`. `onChange` receives the raw string value (not an event). `variant` is declared in the props but **not applied** in the implementation.
+
+**Props**
+
+```ts
+export interface TextareaProps {
+  type?: "text" | "password" | "email" | "number" | "tel" | "url" | "file"
+  disabled?: boolean
+  placeholder?: string
+  value?: string
+  maxLength?: number
+  minLength?: number
+  required?: boolean
+  name?: string
+  id?: string
+  onChange?: (value: string) => void
+  width?: number | string
+  size?: "xs" | "sm" | "md" | "lg" | "xl"   // default "xl" (min-h-12 rounded-2xl px-4 py-3)
+  variant?: "primary" | "secondary" | "none" // declared but not applied
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+// app/components/feedback-form.tsx ("use client")
+import Textarea from "@modlin/ui/textarea"
+import { useState } from "react"
+
+export default function FeedbackForm() {
+  const [message, setMessage] = useState("")
+  return (
+    <Textarea
+      placeholder="Write your feedback…"
+      value={message}
+      onChange={setMessage}
+      maxLength={500}
+      size="sm"
+    />
+  )
+}
+```
+
+---
+
+### `Checkbox` — ⚠️ "use client"
+
+- **Import:** `import Checkbox from "@modlin/ui/checkbox"`
+- **Constraints:** **"use client"** — uses `useRef`. Renders a hidden native `<input type="checkbox">` paired with a styled `<button role="checkbox">`. State must be wired through `onChange` (the visual state is driven by the hidden peer input). `value` and `onValueChange` are **deprecated** — use `checked` / `onChange`.
+
+**Props**
+
+```ts
+export interface CheckboxProps {
+  disabled?: boolean
+  defaultChecked?: boolean
+  checked?: boolean
+  label?: string               // used as aria-label
+  required?: boolean
+  name?: string
+  id?: string
+  asChild?: boolean
+  onChange?(checked: boolean): void
+
+  /** @deprecated @use checked */
+  value?: string
+  /** @deprecated @use onChange */
+  onValueChange?(event: ChangeEvent<HTMLInputElement>): void
+}
+```
+
+**Example**
+
+```tsx
+// app/components/terms.tsx ("use client")
+import Checkbox from "@modlin/ui/checkbox"
+import { useState } from "react"
+
+export default function TermsCheckbox() {
+  const [accepted, setAccepted] = useState(false)
+  return (
+    <Checkbox
+      label="I accept the terms"
+      checked={accepted}
+      onChange={setAccepted}
+    />
+  )
+}
+```
+
+---
+
+### `Switch` — ⚠️ "use client"
+
+- **Import:** `import Switch from "@modlin/ui/switch"`
+- **Constraints:** **"use client"** — uses `useState`/`useEffect`. Renders a hidden native `<input type="checkbox">` paired with a styled `<button role="switch">`. Controlled via `checked` / `onChange` (the effect re-fires `onChange` whenever the internal state changes). ⚠️ Quirk: the hidden input uses `name={props.id}` instead of `props.name`.
+
+**Props**
+
+```ts
+export interface SwitchProps {
+  checked?: boolean
+  onChange?(checked: boolean): void
+  disabled?: boolean
+  size?: "sm" | "lg"          // default "lg"
+  label?: string              // used as aria-label
+  required?: boolean          // web
+  name?: string               // web — NOTE: not actually applied (input uses id)
+  value?: string              // web
+  id?: string                 // web
+}
+```
+
+**Example**
+
+```tsx
+// app/components/notifications.tsx ("use client")
+import Switch from "@modlin/ui/switch"
+import { useState } from "react"
+
+export default function Notifications() {
+  const [enabled, setEnabled] = useState(true)
+  return (
+    <div className="flex items-center gap-3">
+      <span>Email notifications</span>
+      <Switch size="sm" checked={enabled} onChange={setEnabled} />
+    </div>
+  )
+}
+```
+
+---
+
+### `RadioGroup` / `RadioGroupItem`
+
+- **Import:** `import { RadioGroup, RadioGroupItem } from "@modlin/ui/radio"`
+- **Constraints:** Server-safe. Thin wrappers over native HTML: `<fieldset>` + `<input type="radio">`. Shared `name` must be set manually on both or on the group. Note the group's default prop is `default` (not `defaultValue`).
+
+**Props**
+
+```ts
+export interface RadioGroupProps {
+  default?: string
+  name?: string
+  required?: boolean
+  children: React.ReactNode
+}
+
+export interface RadioGroupItemProps {
+  value: string        // required
+  name?: string
+  id?: string
+}
+```
+
+**Example**
+
+```tsx
+// app/components/fruit-picker.tsx (Server Component)
+import { RadioGroup, RadioGroupItem } from "@modlin/ui/radio"
+import Label from "@modlin/ui/label"
+
+<RadioGroup name="fruit" default="apple" required>
+  <Label htmlFor="apple">
+    <RadioGroupItem value="apple" id="apple" name="fruit" /> Apple
+  </Label>
+  <Label htmlFor="banana">
+    <RadioGroupItem value="banana" id="banana" name="fruit" /> Banana
+  </Label>
+</RadioGroup>
+```
+
+---
+
+### `Select` + `SelectItem` (native) — `src/select.native.tsx`
+
+- **Import:** `import { Select, SelectItem } from "@modlin/ui/select.native"`
+- **Constraints:** Server-safe. Renders native `<select>` / `<option>` and relies on the base-select styling in `globals.css` (fancy animated picker). Styling via `cva` (`selectVariants`).
+
+**Props**
+
+```ts
+export interface SelectProps extends ViewProps, VariantProps<typeof selectVariants> {
+  defaultValue?: string
+  value?: string
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
+  name?: string
+  id?: string
+  // cva variants — default variant "primary", size "xl"
+  variant?: "primary" | "secondary" | "none"
+  size?: "sm" | "md" | "lg" | "xl" | "none"
+}
+
+export interface SelectItemProps {
+  disabled?: boolean
+  selected?: boolean
+  hidden?: boolean
+  value: string      // required
+  children?: ReactNode
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+// app/components/country-select.tsx (Server Component)
+import { Select, SelectItem } from "@modlin/ui/select.native"
+import Label from "@modlin/ui/label"
+
+<>
+  <Label htmlFor="country">Country</Label>
+  <Select id="country" name="country" size="md" defaultValue="us">
+    <SelectItem value="us">United States</SelectItem>
+    <SelectItem value="de">Germany</SelectItem>
+    <SelectItem value="jp">Japan</SelectItem>
+  </Select>
+</>
+```
+
+---
+
+### `Select` (custom dropdown) — ⚠️ "use client", in-progress
+
+- **Import:** `import { Select, SelectTrigger, SelectContent, SelectItem, Dropdown } from "@modlin/ui/select"`
+- **Constraints:** **"use client"** — uses `useState` and `React.Children.cloneElement` to wire item selection. This is an early/experimental implementation (open/close is manually managed, no outside-click handling, hardcoded `max-w-56`, placeholder required). Prefer the native `@modlin/ui/select.native` for production use.
+
+**Props**
+
+```ts
+export interface SelectProps {
+  defaultValue?: string
+  placeholder: string           // required
+  value?: string
+  name?: string
+  id?: string
+  children: ReactElement<SelectItemProps>[]   // required
+}
+
+export interface SelectTriggerProps {
+  placeholder?: string
+  id?: string
+  children?: string
+}
+
+export interface SelectContentProps {
+  defaultValue: string        // required
+  children?: ReactNode
+}
+
+export interface SelectItemProps {
+  value: string               // required
+  children: ReactNode
+  className?: string
+  onPress?: () => void        // auto-injected by Select/SelectContent
+}
+```
+
+**Example**
+
+```tsx
+// app/components/gender-select.tsx ("use client")
+import { Select, SelectItem } from "@modlin/ui/select"
+
+export default function GenderSelect() {
+  return (
+    <Select placeholder="Select a gender">
+      <SelectItem value="male">Male</SelectItem>
+      <SelectItem value="female">Female</SelectItem>
+      <SelectItem value="other">Other</SelectItem>
+    </Select>
+  )
+}
+```
+
+---
+
+### `PasswordField` — ⚠️ "use client"
+
+- **Import:** `import PasswordField from "@modlin/ui/password"`
+- **Constraints:** **"use client"** — uses `useState` for the show/hide toggle. Extends `TextInputProps` and forces `autoCapitalize="none"` and `autoComplete="current-password"`. Any `children` render after the input inside the wrapper.
+
+**Props**
+
+```ts
+export interface PasswordFieldProps extends TextInputProps {
+  children?: ReactNode
+}
+// (see TextInputProps in the TextInput section above for the inherited fields)
+```
+
+**Example**
+
+```tsx
+// app/components/login-form.tsx ("use client")
+import PasswordField from "@modlin/ui/password"
+import TextInput from "@modlin/ui/input"
+import Label from "@modlin/ui/label"
+import Button from "@modlin/ui/button"
+
+export default function LoginForm() {
+  return (
+    <form className="flex flex-col gap-4">
+      <Label htmlFor="email">Email</Label>
+      <TextInput id="email" type="email" size="md" placeholder="you@example.com" />
+      <Label htmlFor="password">Password</Label>
+      <PasswordField id="password" size="md" placeholder="••••••••" />
+      <Button type="submit" size="md" shape="rounded">Sign in</Button>
+    </form>
+  )
+}
+```
+
+---
+
+### `Label`
+
+- **Import:** `import Label from "@modlin/ui/label"`
+- **Constraints:** Server-safe. Renders `<label>`. `htmlFor` and `children` are required. With `asChild`, the label props are merged onto the child element (e.g. to wrap a `RadioGroupItem`).
+
+**Props**
+
+```ts
+export interface LabelProps {
+  htmlFor: string        // required
+  label?: string         // used as aria-label
+  children: ReactNode    // required
+  className?: string
+  onPress?: React.MouseEventHandler<HTMLLabelElement>
+  asChild?: boolean
+}
+```
+
+**Example**
+
+```tsx
+import Label from "@modlin/ui/label"
+
+<Label htmlFor="name" className="text-sm font-medium">Full name</Label>
+```
+
+---
+
+### `ErrorMessage`
+
+- **Import:** `import { ErrorMessage } from "@modlin/ui/errormessage"`
+- **Constraints:** Server-safe. Renders a red `<Small>`; returns `undefined` (renders nothing) when `children` is falsy — safe to always render conditionally. Default icon is the glyph `"\uea05"` unless overridden.
+
+**Props**
+
+```ts
+export interface ErrorMessageProps {
+  icon?: ReactNode
+  children?: ReactNode
+  id?: string
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+// app/components/signup-form.tsx ("use client")
+import { ErrorMessage } from "@modlin/ui/errormessage"
+import { IconAlertTriangle } from "@tabler/icons-react"
+
+<ErrorMessage icon={<IconAlertTriangle />} id="email-error">
+  Please enter a valid email address.
+</ErrorMessage>
+```
+
+---
+
+## 5. Feedback & Status
+
+### `Alert` / `AlertTitle` / `AlertDescription`
+
+- **Import:** `import { Alert, AlertTitle, AlertDescription } from "@modlin/ui/alert"`
+- **Constraints:** Server-safe. Composes via a grid layout: children are expected as an icon (16px) followed by `AlertTitle` and `AlertDescription`. `dismissible` is declared in `AlertProps` but **not implemented**. `Alert.Destructive` is a static alternate variant (red text).
+
+**Props**
+
+```ts
+export interface AlertProps extends ViewProps {
+  dismissible?: boolean    // declared but not implemented
+}
+// AlertTitleProps, AlertDescriptionProps extend ViewProps (empty)
+```
+
+**Example**
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from "@modlin/ui/alert"
+import { IconInfoCircle } from "@tabler/icons-react"
+
+<Alert>
+  <IconInfoCircle size={16} className="text-muted-foreground" />
+  <AlertTitle>Heads up</AlertTitle>
+  <AlertDescription>Your account is being reviewed.</AlertDescription>
+</Alert>
+
+<Alert.Destructive className="mt-4">
+  <IconX size={16} />
+  <AlertTitle>Access denied</AlertTitle>
+  <AlertDescription>You do not have permission.</AlertDescription>
+</Alert.Destructive>
+```
+
+---
+
+### `Badge`
+
+- **Import:** `import Badge from "@modlin/ui/badge"`
+- **Constraints:** Server-safe. Renders `<span>`. When `children` is a `number`, a fixed `w-5` width is applied (count badge).
+
+**Props**
+
+```ts
+export interface BadgeProps {
+  variant?: "primary" | "secondary" | "destructive" | "outline"  // default "primary"
+  size?: "xs" | "sm" | "md" | "lg"                               // default "md"
+  shape?: "square" | "rounded" | "pill"                          // default "pill"
+  children?: ReactNode | number
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import Badge from "@modlin/ui/badge"
+
+<Badge variant="secondary" size="sm">beta</Badge>
+<Badge variant="destructive">{3}</Badge>
+```
+
+---
+
+### `Skeleton`
+
+- **Import:** `import { Skeleton } from "@modlin/ui/skeleton"`
+- **Constraints:** Server-safe. Renders a `<div>` with `animate-pulse bg-muted rounded-lg`. Width/height must be supplied via `className` or it collapses (no intrinsic size).
+
+**Props**
+
+```ts
+export interface SkeletonProps {
+  className?: string
+}
+```
+
+**Example**
+
+```tsx
+import { Skeleton } from "@modlin/ui/skeleton"
+
+<div className="flex flex-col gap-4">
+  <Skeleton className="h-4 w-1/2" />
+  <Skeleton className="h-10 w-full" />
+</div>
+```
+
+---
+
+### `Spinner`
+
+- **Import:** `import Spinner from "@modlin/ui/spinner"`
+- **Constraints:** Server-safe. Renders `IconLoader2` from `@tabler/icons-react` with `animate-spin`, `role="status"`, `aria-label="Loading..."`. Accepts any SVG props.
+
+**Props**
+
+```ts
+// Spinner accepts React.SVGProps (React.ComponentProps<"svg">)
+{ className?: string; ...rest }
+```
+
+**Example**
+
+```tsx
+import Spinner from "@modlin/ui/spinner"
+
+<Spinner className="size-5 text-primary" />
+```
+
+---
+
+### `Tooltip`
+
+- **Import:** `import Tooltip from "@modlin/ui/tooltip"`
+- **Constraints:** Server-safe. CSS-only hover tooltip (uses `group-hover`). The label is rendered inside a `Badge`. `label` is required.
+
+**Props**
+
+```ts
+export interface TooltipProps {
+  label: string      // required
+  className?: string // applied to the tooltip badge
+  children?: ReactNode
+}
+```
+
+**Example**
+
+```tsx
+import Tooltip from "@modlin/ui/tooltip"
+import Button from "@modlin/ui/button"
+
+<Tooltip label="Copy link">
+  <Button size="icon-sm" shape="rounded" variant="outline">🔗</Button>
+</Tooltip>
+```
+
+---
+
+### `Copy` — ⚠️ "use client"
+
+- **Import:** `import Copy from "@modlin/ui/copy"` (named + default)
+- **Constraints:** **"use client"** — uses `navigator.clipboard.writeText`. Wraps `Button` (internally sets `variant="none" size="none"`, then spreads your props on top, so you can still pass any `ButtonProps`). Requires a secure context (HTTPS or localhost) for the Clipboard API. Calls `onCopy` / `onStatusChange` after the write.
+
+**Props**
+
+```ts
+export type CopyStatus = "success" | "failed" | "none"
+
+export interface CopyProps extends ButtonProps {
+  copy?: string
+  copied?: boolean
+  onCopy?: (copied: boolean) => void | Promise<void>
+  onStatusChange?: (status: CopyStatus) => void | Promise<void>
+}
+// (see ButtonProps in the Button section below for inherited fields)
+```
+
+**Example**
+
+```tsx
+// app/components/code-block.tsx ("use client")
+import Copy from "@modlin/ui/copy"
+import { useState } from "react"
+
+export default function CodeBlock({ code }: { code: string }) {
+  const [status, setStatus] = useState<"none" | "success" | "failed">("none")
+  return (
+    <Copy
+      copy={code}
+      size="sm"
+      variant="outline"
+      shape="rounded"
+      onStatusChange={setStatus}
+    >
+      {status === "success" ? "Copied!" : "Copy"}
+    </Copy>
+  )
+}
+```
+
+---
+
+### `toast` — ⚠️ Client-only function
+
+- **Import:** `import { toast } from "@modlin/ui/toast"`
+- **Constraints:** **Client-only** — directly manipulates `document`. It appends a `<div>` into an element with `id="toasts"`, so your app must include a `#toasts` mount point. The `description` option is declared but **not used** by the implementation. Only one toast is supported at a time (no queue).
+
+**Props**
+
+```ts
+export interface ToastOptions {
+  description?: string   // declared but not used
+}
+export function toast(title: string, _options?: ToastOptions): false
+```
+
+**Example**
+
+```tsx
+// app/layout.tsx — add the mount point once
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <div id="toasts" className="fixed inset-x-0 top-0 flex flex-col items-center gap-2" />
+      </body>
+    </html>
+  )
+}
+
+// app/components/save.tsx ("use client")
+import { toast } from "@modlin/ui/toast"
+
+export function SaveButton() {
+  return <button onClick={() => toast("Settings saved")}>Save</button>
+}
+```
+
+---
+
+## 6. Navigation & Interactive
+
+### `Button`
+
+- **Import:** `import Button, { buttonVariants, type ButtonProps } from "@modlin/ui/button"`
+- **Constraints:** Server-safe (no hooks). Renders `<button>`; when `loading` is true the button is disabled and renders a `Spinner`. `label` maps to both `aria-label` and `title`. `asChild` clones the given child and merges button behavior onto it (e.g. a `next/link`). Variants are exposed as `buttonVariants` (a `cva` recipe) for reuse.
+
+**Props**
+
+```ts
+export interface ButtonProps extends ViewProps, VariantProps<typeof buttonVariants> {
+  // cva variants — default variant "primary", size "xl", shape "pill"
+  variant?: "primary" | "secondary" | "destructive" | "outline" | "ghost" | "link" | "none"
+  size?: "xs" | "sm" | "md" | "lg" | "xl" | "icon" | "icon-xs" | "icon-sm" | "icon-md" | "none"
+  shape?: "square" | "rounded" | "pill"
+
+  disabled?: boolean
+  loading?: boolean            // disables + shows Spinner
+  label?: string               // aria-label + title
+  title?: string               // rendered text (overrides children when set)
+  asChild?: boolean            // merge behavior onto a single child element
+  haptics?: boolean            // @android @ios — no-op on web
+  full?: boolean               // @android @ios — no-op on web
+  rounded?: number             // @android @ios — no-op on web
+  id?: string
+  type?: "button" | "reset" | "submit"   // default "button"
+  popoverTarget?: string
+
+  onPress?(event: MouseEvent): void | Promise<void>       // → onClick
+  onPressIn?(event: MouseEvent): void | Promise<void>     // → onMouseDown
+  onPressOut?(event: MouseEvent): void | Promise<void>    // → onMouseUp
+  onMouseEnter?(event: MouseEvent): void | Promise<void>
+  onMouseLeave?(event: MouseEvent): void | Promise<void>
+  onHover?(event: MouseEvent): void | Promise<void>       // → onMouseOver
+  onFocus?(event: FocusEvent): void | Promise<void>
+  onBlur?(event: FocusEvent): void | Promise<void>
+}
+```
+
+**Example**
+
+```tsx
+// app/components/cta.tsx ("use client" — needs onPress)
+import Button from "@modlin/ui/button"
+import { IconArrowRight } from "@tabler/icons-react"
+
+export function CtaButton() {
+  return (
+    <Button
+      variant="primary"
+      size="xl"
+      shape="pill"
+      label="Get started"
+      onPress={async () => console.log("clicked")}
+    >
+      Get started
+      <IconArrowRight />
+    </Button>
+  )
+}
+```
+
+**As-child with a Next link:**
+
+```tsx
+// app/components/link-button.tsx (Server Component — static rendering)
+import Button from "@modlin/ui/button"
+import Link from "next/link"
+
+export function LinkButton() {
+  return (
+    <Button asChild variant="secondary" size="md" shape="rounded">
+      <Link href="/docs">Read the docs</Link>
+    </Button>
+  )
+}
+```
+
+---
+
+### `Link` — ⚠️ "use client"
+
+- **Import:** `import Link from "@modlin/ui/link"`
+- **Constraints:** **"use client"** — uses `useState` for copy feedback. Wraps **Next.js `<Link>`** (`next/link`), so all `next/link` props pass through (`href` is required). Default styling is `text-primary/75 hover:underline hover:text-primary`. Passing `copyable` (or `copy`) adds a hover-revealed copy button that writes `copy ?? href` to the clipboard. ⚠️ This component is named `Link`; do not confuse it with `next/link` — import the UI version from `@modlin/ui/link`.
+
+**Props**
+
+```ts
+export interface LinkProps extends LinkProps /* next/link */ {
+  copy?: string
+  className?: string
+  children?: ReactNode
+  copyable?: boolean
+}
+```
+
+**Example**
+
+```tsx
+// app/components/doc-link.tsx ("use client")
+import Link from "@modlin/ui/link"
+
+export default function DocLink() {
+  return (
+    <Link href="https://example.com/docs" copyable>
+      Read documentation
+    </Link>
+  )
+}
+```
+
+---
+
+### `Item`
+
+- **Import:** `import Item from "@modlin/ui/item"` (named + default)
+- **Constraints:** Server-safe. Renders `<li>`. With `asChild`, merges item styling (padding, hover, icon sizing) onto the child element.
+
+**Props**
+
+```ts
+export interface ItemProps extends ViewProps {
+  asChild?: boolean
+}
+```
+
+**Example**
+
+```tsx
+import Item from "@modlin/ui/item"
+import { IconSettings } from "@tabler/icons-react"
+
+<ul>
+  <Item className="items-center">
+    <IconSettings />
+    <span>Settings</span>
+  </Item>
+</ul>
+```
+
+---
+
+### `Pagination`
+
+- **Import:** `import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationButton, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@modlin/ui/pagination"`
+- **Constraints:** Server-safe. Composite component built on `Button` + `next/link`. `PaginationLink` renders a `Button` (`asChild`) wrapping a `next/link` — `href` is required and `isActive` swaps to the `secondary` variant. `PaginationPrevious` / `PaginationNext` use icon chevrons (note: Next's default `aria-label` says "Go to previous page" — a copy-paste quirk in the library).
+
+**Props**
+
+```ts
+export interface PaginationProps extends ViewProps {}            // <nav aria-label="pagination">
+export interface PaginationContentProps extends ViewProps {}     // <ul>
+export interface PaginationItemProps extends ViewProps {}        // <ul> (quirk: renders ul)
+export interface PaginationLinkProps extends ViewProps {
+  isActive?: boolean
+}
+// PaginationLink accepts LinkProps (next/link) + ButtonProps as well
+export interface PaginationButtonProps extends ButtonProps {
+  isActive?: boolean
+}
+export interface PaginationPreviousProps extends PaginationButtonProps {}
+export interface PaginationNextProps extends PaginationButtonProps {}
+export interface PaginationEllipsisProps extends ViewProps {}   // <span aria-hidden>
+```
+
+**Example**
+
+```tsx
+import {
+  Pagination, PaginationContent, PaginationItem, PaginationLink,
+  PaginationPrevious, PaginationNext, PaginationEllipsis,
+} from "@modlin/ui/pagination"
+
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="/page/2" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/page/1">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="/page/2" isActive>2</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="/page/3" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+---
+
+### `Sidebar` family — ⚠️ "use client"
+
+- **Import:** `import { Sidebar, SidebarProvider, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton, SidebarTrigger, useSidebar } from "@modlin/ui/sidebar"`
+- **Constraints:** **"use client"** — uses context (`SidebarContext`), `useState`, `useCallback`, and the `useMobile` hook. Wrap your sidebar in `SidebarProvider`; any component can then call `useSidebar()` to read/toggle state. On mobile (`< 640px`) the toggle uses the mobile-open state. `SidebarTrigger` renders a collapsible `Button`.
+- **Quirks to be aware of:** `SidebarProps` declares a misspelled `collasped` prop that is ignored; `SidebarMenuButton` supports `selected` / `collapsed` to control the ghost-button variant and icon sizing.
+
+**Props**
+
+```ts
+export interface SidebarProps extends ViewProps {
+  collasped?: boolean      // NOTE: misspelled + ignored
+  size?: "sm" | "lg"       // declared but not applied
+}
+export interface SidebarHeaderProps extends ViewProps {}
+export interface SidebarContentProps extends ViewProps {}
+export interface SidebarFooterProps extends ViewProps {}
+export interface SidebarMenuItemProps extends ViewProps {}
+
+export interface SidebarMenuButtonProps extends ButtonProps {
+  selected?: boolean
+  collapsed?: boolean      // renders icon-md variant when true
+}
+
+export interface SidebarGroupLabelProps extends Omit<LabelProps, "htmlFor"> {
+  expanded?: boolean
+  asChild?: boolean
+}
+export interface SidebarGroupContentProps extends ViewProps {
+  expanded?: boolean       // hidden when false (default true)
+  loading?: boolean        // renders skeleton menu item while true
+}
+export interface SidebarGroupProps {
+  id?: string
+  expanded?: boolean
+  children?: ReactNode
+  className?: string
+}
+
+export interface SidebarProviderProps {
+  defaultOpen?: boolean                 // default true
+  open?: boolean                        // controlled
+  onOpenChange?: (open: boolean) => void
+  children?: ReactNode
+}
+
+export interface SidebarContextProps {
+  open: boolean
+  setOpen(open: boolean): void
+  openMobile: boolean
+  setOpenMobile(open: boolean): void
+  isMobile: boolean
+  toggleSidebar(): void
+}
+export const SidebarContext = createContext<SidebarContextProps | null>(null)
+export function useSidebar(): SidebarContextProps  // throws if used outside SidebarProvider
+```
+
+**Example**
+
+```tsx
+// app/components/app-sidebar.tsx ("use client")
+import {
+  SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarGroup,
+  SidebarGroupLabel, SidebarGroupContent, SidebarMenuItem, SidebarMenuButton,
+  SidebarTrigger,
+} from "@modlin/ui/sidebar"
+import { IconHome, IconUser } from "@tabler/icons-react"
+
+export default function AppSidebar() {
+  return (
+    <SidebarProvider defaultOpen>
+      <div className="flex h-screen">
+        <Sidebar>
+          <SidebarHeader>
+            <SidebarTrigger />
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Menu</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenuItem>
+                  <SidebarMenuButton selected>
+                    <IconHome /> Dashboard
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <IconUser /> Profile
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+        </Sidebar>
+        <main className="flex-1 p-6">Page content</main>
+      </div>
+    </SidebarProvider>
+  )
+}
+```
+
+---
+
+## 7. Disclosure / Accordion
+
+### `Accordion` family
+
+- **Import:** `import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@modlin/ui/accordion"`
+- **Constraints:** Server-safe. Built on native `<details>` / `<summary>`, so open/close state is browser-managed (no JS, works in Server Components). Items are **independent** (each `<details>` toggles on its own; not an exclusive accordion). `AccordionItem`'s `value` prop and `Accordion`'s `value`/`defaultValue` are declared but **not wired** to behavior. `AccordionContent` renders a `<p>` (text content only).
+
+**Props**
+
+```ts
+export interface AccordionProps extends ViewProps {
+  defaultValue?: string   // declared but unused
+  value?: string          // declared but unused
+}
+export interface AccordionItemProps extends ViewProps {
+  value?: string          // declared but unused
+}
+export interface AccordionTriggerProps extends ViewProps {}
+export interface AccordionContentProps extends ViewProps {}
+```
+
+**Example**
+
+```tsx
+// app/components/faq.tsx (Server Component)
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@modlin/ui/accordion"
+
+<Accordion className="max-w-lg">
+  <AccordionItem>
+    <AccordionTrigger>What is @modlin/ui?</AccordionTrigger>
+    <AccordionContent>A lightweight React UI library built on the Motive design system.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem>
+    <AccordionTrigger>Is it themeable?</AccordionTrigger>
+    <AccordionContent>Yes — tokens are defined in globals.css and follow prefers-color-scheme.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+---
+
+### `Collapsible` family — ⚠️ "use client"
+
+- **Import:** `import { Collapsible, CollapsibleTrigger, CollapsibleContent, useCollapsible } from "@modlin/ui/collapsible"`
+- **Constraints:** **"use client"** — React context + `useState`. Controlled (`open` / `onOpenChange`) or uncontrolled (`defaultOpen`). `useCollapsible()` throws if used outside a `Collapsible`. `CollapsibleContent` returns `null` when closed.
+
+**Props**
+
+```ts
+export interface CollapsibleProps {
+  defaultOpen?: boolean
+  open?: boolean
+  onOpenChange?(open: boolean): void
+  children?: ReactNode
+}
+export interface CollapsibleContext {
+  open: boolean
+  toggle(): void
+}
+// CollapsibleTrigger / CollapsibleContent accept ViewProps
+```
+
+**Example**
+
+```tsx
+// app/components/filter-section.tsx ("use client")
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@modlin/ui/collapsible"
+
+export default function FilterSection() {
+  return (
+    <Collapsible defaultOpen>
+      <CollapsibleTrigger className="flex items-center gap-2 text-sm font-medium">
+        Filters
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-2">
+        <p className="text-muted-foreground">Filter options…</p>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+```
+
+---
+
+## 8. Data Display
+
+### `Avatar` — ⚠️ "use client"
+
+- **Import:** `import Avatar from "@modlin/ui/avatar"`
+- **Constraints:** **"use client"** — uses `useState` to handle image errors. Built on `next/image` (`ImageProps`), so image hosting must be configured in `next.config` (remote patterns). When `src` is missing/errors, the `fallback` string is shown (first 3 characters, uppercased, mono font). `size` defaults to 32 (also used as the `next/image` width/height).
+
+**Props**
+
+```ts
+export interface AvatarProps extends Omit<ImageProps, "src"> {
+  src?: string | URL
+  size?: number          // default 32
+  fallback: string       // required
+}
+```
+
+**Example**
+
+```tsx
+// app/components/user-avatar.tsx ("use client")
+import Avatar from "@modlin/ui/avatar"
+
+export function UserAvatar() {
+  return <Avatar src="/avatars/alice.png" fallback="Alice Johnson" size={48} />
+}
+```
+
+---
+
+## 9. Hooks & Utilities
+
+### `useMobile`
+
+- **Import:** `import { useMobile } from "@modlin/ui/use-mobile"`
+- **Constraints:** **Client-side hook** — uses `window.matchMedia` in `useEffect` (SSR-safe; initializes `false`). Breakpoint is `< 640px`. Returns `{ isMobile }`.
+
+```ts
+export function useMobile(): { isMobile: boolean }
+```
+
+**Example**
+
+```tsx
+// app/components/responsive-nav.tsx ("use client")
+import { useMobile } from "@modlin/ui/use-mobile"
+
+export default function ResponsiveNav() {
+  const { isMobile } = useMobile()
+  return <nav>{isMobile ? "Menu" : "Full navigation"}</nav>
+}
+```
+
+---
+
+## 10. Known Quirks & Gotchas (quick reference)
+
+| Component | Quirk |
+|---|---|
+| `Button` | `loading` disables the button and injects a `Spinner`; `label` doubles as `aria-label` and `title`. |
+| `Button` (asChild) | Clones the child; only the first child is used. |
+| `Checkbox` | Visual state is a peer-linked button; controlled usage requires wiring `checked` + `onChange`. |
+| `Switch` | Controlled via `checked`/`onChange`; input uses `name={props.id}` (not `name`). |
+| `RadioGroup` | Default selection prop is `default`, not `defaultValue`. |
+| `Select` (custom) | Experimental; prefers `select.native` for production. |
+| `Select.native` | Styling relies on `@import "@modlin/ui/globals.css"` (base-select). |
+| `Textarea` | `variant` prop is declared but not applied. |
+| `Stack` | `direction` prop accepted but not applied; gaps are inline styles. |
+| `Header` | `children` must be a `[Heading, Text]` tuple. |
+| `Alert` | `dismissible` not implemented; `Alert.Destructive` is the destructive variant. |
+| `toast` | Requires a `<div id="toasts">` mount point; client-only; `description` unused. |
+| `PaginationNext` | Default label reads "Go to previous page" (library copy-paste quirk). |
+| `Sidebar` | `collasped` prop is a misspelled no-op; use `SidebarProvider` + `useSidebar`. |
+| `Avatar` | `next/image` — configure remote domains in `next.config`. |
+| `Item` | Renders `<li>`; `PaginationItem` renders `<ul>` (nested-list quirk). |
+| `Accordion` | Native `<details>`; items are independent, not mutually exclusive. |
+| Icons | Components style `>svg` children (size 4–5). Use `@tabler/icons-react` for best results. |
+
+---
+
+## 11. Full Component Index
+
+| Subpath | Exports | "use client" |
+|---|---|---|
+| `@modlin/ui/accordion` | `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent` | — |
+| `@modlin/ui/alert` | `Alert` (+ `.Destructive`), `AlertTitle`, `AlertDescription` | — |
+| `@modlin/ui/avatar` | `Avatar` (default) | ✅ |
+| `@modlin/ui/badge` | `Badge` (default) | — |
+| `@modlin/ui/button` | `Button` (default), `buttonVariants` | — |
+| `@modlin/ui/card` | `Card` (default + named), `CardHeader`, `CardContent`, `CardFooter`, `CardAction` | — |
+| `@modlin/ui/checkbox` | `Checkbox` (default) | ✅ |
+| `@modlin/ui/collapsible` | `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`, `useCollapsible` | ✅ |
+| `@modlin/ui/content` | `Content` (default) | — |
+| `@modlin/ui/copy` | `Copy` (default + named) | ✅ |
+| `@modlin/ui/divider` | `Divider` (default) — **deprecated** | — |
+| `@modlin/ui/errormessage` | `ErrorMessage` | — |
+| `@modlin/ui/footer` | `Footer` (default) | — |
+| `@modlin/ui/header` | `Header` (default) | — |
+| `@modlin/ui/heading` | `Heading` (default = h1), `Heading1`…`Heading6` | — |
+| `@modlin/ui/input` | `TextInput` (default + named), `Prompt`, `InputGroup`, `textInputVariants` | — |
+| `@modlin/ui/item` | `Item` (default + named) | — |
+| `@modlin/ui/kbd` | `Kbd` (default), `KbdGroup` | — |
+| `@modlin/ui/label` | `Label` (default) | — |
+| `@modlin/ui/link` | `Link` (default) | ✅ |
+| `@modlin/ui/pagination` | `Pagination`, `PaginationContent`, `PaginationItem`, `PaginationLink`, `PaginationButton`, `PaginationPrevious`, `PaginationNext`, `PaginationEllipsis` | — |
+| `@modlin/ui/password` | `PasswordField` (default + named) | ✅ |
+| `@modlin/ui/radio` | `RadioGroup`, `RadioGroupItem` | — |
+| `@modlin/ui/select` | `Select`, `SelectTrigger`, `SelectContent`, `SelectItem`, `Dropdown` (experimental) | ✅ |
+| `@modlin/ui/select.native` | `Select`, `SelectItem` | — |
+| `@modlin/ui/separator` | `Separator` (default) | — |
+| `@modlin/ui/sidebar` | `Sidebar`, `SidebarProvider`, `SidebarHeader`, `SidebarContent`, `SidebarFooter`, `SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupContent`, `SidebarMenuItem`, `SidebarMenuButton`, `SidebarTrigger`, `SidebarContext`, `useSidebar` | ✅ |
+| `@modlin/ui/skeleton` | `Skeleton` | — |
+| `@modlin/ui/spinner` | `Spinner` (default + named) | — |
+| `@modlin/ui/stack` | `Stack` (default), `VStack`, `HStack` | — |
+| `@modlin/ui/switch` | `Switch` (default) | ✅ |
+| `@modlin/ui/text` | `Text` (default) | — |
+| `@modlin/ui/textarea` | `Textarea` (default) | — |
+| `@modlin/ui/toast` | `toast` | Client-only fn |
+| `@modlin/ui/tooltip` | `Tooltip` (default + named) | — |
+| `@modlin/ui/typography` | `InlineCode`, `Lead`, `Large`, `Small`, `Muted`, `Caption` | — |
+| `@modlin/ui/use-mobile` | `useMobile` | Client-only hook |
+| `@modlin/ui/view` | `View` (default + named), `Stack`, `ScrollView`, `FlatList` | — |
+| `@modlin/ui/utils` | `cn`, `mergeProps` | — |
+| `@modlin/ui/globals.css` | CSS design tokens (import in `globals.css`) | — |
+
+> Package metadata: name `@modlin/ui`, version `0.0.270`, `type: module`, subpath exports `./* → ./src/*.tsx`. No root entry point.

@@ -40,7 +40,7 @@ export const Small = forwardRef<HTMLElement, TypographyProps>((props, ref) => {
 
 export const Muted = forwardRef<HTMLParagraphElement, TypographyProps>((props, ref) => {
 	return (
-		<p ref={ref} className={cn("text-sm text-muted-foreground first:not-last:leading-4 first:not-last:mb-1", props.className)}>
+		<p ref={ref} className={cn("text-sm text-muted-foreground", props.className)}>
 			{props.children}
 		</p>
 	)

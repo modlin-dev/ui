@@ -1,22 +1,30 @@
-import { Fragment, type JSX } from "react"
-import type { ViewProps } from "./globals"
+import { forwardRef, Fragment, type CSSProperties, type JSX, type ReactNode } from "react"
 import { cn } from "./utils"
 
+export interface ViewProps {
+	/** @platform android, ios, web */
+	children?: ReactNode
+	/** @platform android, ios, web */
+	style?: CSSProperties
+	/** @platform web */
+	className?: string
+}
 export function View(props: ViewProps) {
 	return <div {...props} />
 }
 
 export interface StackProps extends ViewProps {
+	ref?: React.Ref<HTMLDivElement>
 	alignment?: "leading" | "trailing"
 	spacing?: number
 }
-export function Stack(props: StackProps) {
+export const Stack = forwardRef<HTMLDivElement, StackProps>((props, ref) => {
 	return (
-		<div {...props} className={cn("flex flex-col", props.className)}>
+		<div ref={ref} {...props} className={cn("flex flex-col", props.className)}>
 			{props.children}
 		</div>
 	)
-}
+})
 
 export interface ScrollViewProps extends ViewProps {}
 export function ScrollView(props: ScrollViewProps) {

@@ -1,6 +1,6 @@
 import { cn, mergeProps } from "./utils"
 import type { MouseEvent, FocusEvent } from "react"
-import React, { cloneElement } from "react"
+import React, { cloneElement, forwardRef } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import type { ViewProps } from "./globals"
 import Spinner from "./spinner"
@@ -99,7 +99,7 @@ export const buttonVariants = cva(
 			{
 				shape: "square",
 				size: "lg",
-				class: "px-3"
+				class: "px-4"
 			},
 			{
 				shape: "square",
@@ -163,7 +163,7 @@ export interface ButtonProps extends ViewProps, VariantProps<typeof buttonVarian
 	// tone?: "default" | "success" | "error" | "warning"
 	// elevation?: "none" | "xs" | "sm" | "md" | "lg" | "xl"
 }
-export default function Button(props: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
 	const className = buttonVariants({
 		variant: props.variant,
 		size: props.size,
@@ -198,6 +198,7 @@ export default function Button(props: ButtonProps) {
 
 	return (
 		<button
+			ref={ref}
 			type={props.type ?? "button"}
 			disabled={props.loading ? true : props.disabled}
 			aria-label={props.label}
@@ -229,4 +230,6 @@ export default function Button(props: ButtonProps) {
 			)}
 		</button>
 	)
-}
+})
+
+export default Button
